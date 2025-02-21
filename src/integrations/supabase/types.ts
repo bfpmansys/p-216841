@@ -9,7 +9,74 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      establishments: {
+        Row: {
+          business_address: string
+          business_name: string
+          business_type: string
+          created_at: string
+          id: string
+          owner_id: string
+          updated_at: string
+        }
+        Insert: {
+          business_address: string
+          business_name: string
+          business_type: string
+          created_at?: string
+          id?: string
+          owner_id: string
+          updated_at?: string
+        }
+        Update: {
+          business_address?: string
+          business_name?: string
+          business_type?: string
+          created_at?: string
+          id?: string
+          owner_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "establishments_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          birthday: string
+          created_at: string
+          first_name: string
+          id: string
+          last_name: string
+          middle_name: string | null
+          updated_at: string
+        }
+        Insert: {
+          birthday: string
+          created_at?: string
+          first_name: string
+          id: string
+          last_name: string
+          middle_name?: string | null
+          updated_at?: string
+        }
+        Update: {
+          birthday?: string
+          created_at?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          middle_name?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

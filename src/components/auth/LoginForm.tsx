@@ -1,29 +1,90 @@
 
 import { FC, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 export const LoginForm: FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Here you would typically integrate with your authentication service
-    toast({
-      title: "Login Attempted",
-      description: "This is a demo login. Integration with authentication service needed.",
-    });
+    setIsLoading(true);
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+
+      if (data.user) {
+        toast({
+          title: "Login successful",
+          description: "Welcome back!",
+        });
+        navigate("/dashboard"); // Redirect to dashboard after successful login
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to sign in",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleMagicLink = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) {
+      toast({
+        title: "Error",
+        description: "Please enter your email address",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: window.location.origin + "/dashboard",
+        },
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Magic link sent",
+        description: "Check your email for the login link",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to send magic link",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div className="w-full max-w-[400px] p-6">
+    <div className="w-full max-w-[400px] p-6 border-2 border-black rounded-lg">
       <div className="flex flex-col items-center mb-8">
         <img
           src="https://cdn.builder.io/api/v1/image/assets/TEMP/28ec74ab6861245638ef0138e32ba7d04a5dc53e"
@@ -33,7 +94,7 @@ export const LoginForm: FC = () => {
         <h1 className="text-2xl font-bold text-[#FE623F]">LOG IN</h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleLogin} className="space-y-6">
         <div className="space-y-2">
           <Label htmlFor="email">E-mail:</Label>
           <Input
@@ -44,6 +105,7 @@ export const LoginForm: FC = () => {
             onChange={(e) => setEmail(e.target.value)}
             required
             className="bg-gray-100"
+            disabled={isLoading}
           />
         </div>
 
@@ -58,6 +120,7 @@ export const LoginForm: FC = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
               className="bg-gray-100 pr-10"
+              disabled={isLoading}
             />
             <button
               type="button"
@@ -71,16 +134,21 @@ export const LoginForm: FC = () => {
         </div>
 
         <div className="text-right">
-          <Link to="/forgot-password" className="text-sm text-gray-600 hover:underline">
+          <button
+            type="button"
+            onClick={handleMagicLink}
+            className="text-sm text-gray-600 hover:underline"
+          >
             Forgot Password?
-          </Link>
+          </button>
         </div>
 
         <button
           type="submit"
-          className="w-full bg-[#FE623F] text-white py-2 rounded-lg hover:bg-[#FE623F]/90 transition-colors"
+          className="w-full bg-[#FE623F] text-white py-2 rounded-lg hover:bg-[#FE623F]/90 transition-colors disabled:opacity-50"
+          disabled={isLoading}
         >
-          LOG IN
+          {isLoading ? "Loading..." : "LOG IN"}
         </button>
 
         <div className="text-center text-sm">
