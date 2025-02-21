@@ -1,3 +1,4 @@
+
 import { FC, useState } from "react";
 import { FeatureCard } from "./FeatureCard";
 
@@ -20,6 +21,18 @@ const features = [
     title: "Team at Work",
     altText: "Team at Work",
   },
+  {
+    imageUrl:
+      "https://cdn.builder.io/api/v1/image/assets/TEMP/0302336531ba96792f6cd744e9bb3d244fa4ec27",
+    title: "Fire Prevention",
+    altText: "Fire Prevention",
+  },
+  {
+    imageUrl:
+      "https://cdn.builder.io/api/v1/image/assets/TEMP/e381d0c91aedf4ee9bfdd779a0d0d6978fe53fc7",
+    title: "Community Outreach",
+    altText: "Community Outreach",
+  },
 ];
 
 export const FeaturesCarousel: FC = () => {
@@ -32,6 +45,10 @@ export const FeaturesCarousel: FC = () => {
   const handleNext = () => {
     setCurrentIndex((prev) => (prev < features.length - 1 ? prev + 1 : 0));
   };
+
+  // Calculate indices for visible cards
+  const prevIndex = (currentIndex - 1 + features.length) % features.length;
+  const nextIndex = (currentIndex + 1) % features.length;
 
   return (
     <section
@@ -51,10 +68,16 @@ export const FeaturesCarousel: FC = () => {
         />
       </button>
 
-      <div className="flex gap-[60px] max-md:flex-col max-md:items-center">
-        {features.map((feature, index) => (
-          <FeatureCard key={index} {...feature} />
-        ))}
+      <div className="flex gap-[60px] items-center max-md:flex-col max-md:items-center">
+        <div className="transition-all duration-300 transform scale-75">
+          <FeatureCard {...features[prevIndex]} />
+        </div>
+        <div className="transition-all duration-300 transform scale-125 z-10">
+          <FeatureCard {...features[currentIndex]} />
+        </div>
+        <div className="transition-all duration-300 transform scale-75">
+          <FeatureCard {...features[nextIndex]} />
+        </div>
       </div>
 
       <button
