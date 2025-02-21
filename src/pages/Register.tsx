@@ -1,11 +1,10 @@
 
-import { FC, useState } from "react";
-import { Link } from "react-router-dom";
+import { FC } from "react";
 import { Header } from "@/components/layout/Header";
-import { LoginForm } from "@/components/auth/LoginForm";
+import { RegisterForm } from "@/components/auth/RegisterForm";
 import { ChatButton } from "@/components/layout/ChatButton";
 
-const Login: FC = () => {
+const Register: FC = () => {
   return (
     <div className="min-h-screen bg-white font-['Poppins']">
       <Header />
@@ -18,7 +17,7 @@ const Login: FC = () => {
           />
         </div>
         <div className="w-full md:w-1/2 flex items-center justify-center p-8">
-          <LoginForm />
+          <RegisterForm />
         </div>
       </main>
       <ChatButton />
@@ -26,4 +25,4 @@ const Login: FC = () => {
   );
 };
 
-export default Login;
+export default Register;
