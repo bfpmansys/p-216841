@@ -1,3 +1,4 @@
+
 import { FC } from "react";
 import { Header } from "@/components/layout/Header";
 import { HeroSection } from "@/components/home/HeroSection";
@@ -9,8 +10,15 @@ const Index: FC = () => {
     <div className="min-h-screen bg-white font-['Poppins']">
       <Header />
       <main>
-        <HeroSection />
-        <FeaturesCarousel />
+        <section id="home">
+          <HeroSection />
+        </section>
+        <section id="faqs">
+          <FeaturesCarousel />
+        </section>
+        <section id="about">
+          {/* About section content will go here */}
+        </section>
       </main>
       <ChatButton />
     </div>
