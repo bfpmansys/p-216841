@@ -8,6 +8,8 @@ import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Terms from "./pages/Terms";
+import Dashboard from "./pages/Dashboard";
+import EditProfile from "./pages/EditProfile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,15 +25,8 @@ const App = () => (
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/terms" element={<Terms />} />
-          <Route 
-            path="/dashboard" 
-            element={
-              <div className="p-8">
-                <h1 className="text-2xl font-bold">Dashboard</h1>
-                <p>Welcome to your dashboard!</p>
-              </div>
-            } 
-          />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard/profile" element={<EditProfile />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
