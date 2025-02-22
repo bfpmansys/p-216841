@@ -6,7 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Building2, FileText, Buildings, Store } from "lucide-react";
+import { Building2, FileText, Building, Store } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface ApplicationTypeModalProps {
@@ -36,7 +36,7 @@ export const ApplicationTypeModal: FC<ApplicationTypeModalProps> = ({
     {
       title: "Occupancy Permit",
       description: "Get an occupancy permit for your establishment",
-      icon: Buildings,
+      icon: Building,
       type: "occupancy",
     },
     {
