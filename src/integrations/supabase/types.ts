@@ -9,6 +9,127 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      application_requirements: {
+        Row: {
+          application_id: string | null
+          file_name: string
+          file_url: string
+          id: string
+          requirement_type: string
+          uploaded_at: string | null
+        }
+        Insert: {
+          application_id?: string | null
+          file_name: string
+          file_url: string
+          id?: string
+          requirement_type: string
+          uploaded_at?: string | null
+        }
+        Update: {
+          application_id?: string | null
+          file_name?: string
+          file_url?: string
+          id?: string
+          requirement_type?: string
+          uploaded_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "application_requirements_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      applications: {
+        Row: {
+          application_type: string
+          barangay: string
+          building_name: string | null
+          city: string
+          contact_number: string | null
+          created_at: string | null
+          establishment_name: string
+          id: string
+          landline: string | null
+          number_of_storeys: number
+          occupancy_type: string
+          owner_id: string | null
+          owner_name: string
+          province: string
+          region: string
+          representative_name: string | null
+          signature_url: string | null
+          status: string
+          street_name: string | null
+          total_floor_area: number
+          trade_name: string | null
+          unit_no: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          application_type: string
+          barangay: string
+          building_name?: string | null
+          city?: string
+          contact_number?: string | null
+          created_at?: string | null
+          establishment_name: string
+          id?: string
+          landline?: string | null
+          number_of_storeys: number
+          occupancy_type: string
+          owner_id?: string | null
+          owner_name: string
+          province?: string
+          region?: string
+          representative_name?: string | null
+          signature_url?: string | null
+          status?: string
+          street_name?: string | null
+          total_floor_area: number
+          trade_name?: string | null
+          unit_no?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          application_type?: string
+          barangay?: string
+          building_name?: string | null
+          city?: string
+          contact_number?: string | null
+          created_at?: string | null
+          establishment_name?: string
+          id?: string
+          landline?: string | null
+          number_of_storeys?: number
+          occupancy_type?: string
+          owner_id?: string | null
+          owner_name?: string
+          province?: string
+          region?: string
+          representative_name?: string | null
+          signature_url?: string | null
+          status?: string
+          street_name?: string | null
+          total_floor_area?: number
+          trade_name?: string | null
+          unit_no?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "applications_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       establishments: {
         Row: {
           business_address: string
