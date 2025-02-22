@@ -11,6 +11,9 @@ import Terms from "./pages/Terms";
 import Dashboard from "./pages/Dashboard";
 import EditProfile from "./pages/EditProfile";
 import NotFound from "./pages/NotFound";
+import ApplicationForm from "./pages/ApplicationForm";
+import RequirementsUpload from "./pages/RequirementsUpload";
+import ApplicationSummary from "./pages/ApplicationSummary";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +30,9 @@ const App = () => (
           <Route path="/terms" element={<Terms />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/dashboard/profile" element={<EditProfile />} />
+          <Route path="/dashboard/apply/:type" element={<ApplicationForm />} />
+          <Route path="/dashboard/apply/:type/requirements" element={<RequirementsUpload />} />
+          <Route path="/dashboard/apply/:type/summary" element={<ApplicationSummary />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
