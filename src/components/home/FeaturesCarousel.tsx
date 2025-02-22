@@ -5,33 +5,21 @@ import { FeatureCard } from "./FeatureCard";
 const features = [
   {
     imageUrl:
-      "https://cdn.builder.io/api/v1/image/assets/TEMP/0302336531ba96792f6cd744e9bb3d244fa4ec27",
-    title: "Success Stories",
-    altText: "Success Stories",
-  },
-  {
-    imageUrl:
-      "https://cdn.builder.io/api/v1/image/assets/TEMP/e381d0c91aedf4ee9bfdd779a0d0d6978fe53fc7",
+      "/images/carousel/fsts.png",
     title: "Fire Safety Training Sessions",
-    altText: "Fire Safety Training",
+    altText: "Fire Safety Training Sessions",
   },
   {
     imageUrl:
-      "https://cdn.builder.io/api/v1/image/assets/TEMP/ffb90c3d3187aabb591f73a232e60e7b0c681ad0",
+      "/images/carousel/taw.png",
     title: "Team at Work",
     altText: "Team at Work",
   },
   {
     imageUrl:
-      "https://cdn.builder.io/api/v1/image/assets/TEMP/0302336531ba96792f6cd744e9bb3d244fa4ec27",
-    title: "Fire Prevention",
-    altText: "Fire Prevention",
-  },
-  {
-    imageUrl:
-      "https://cdn.builder.io/api/v1/image/assets/TEMP/e381d0c91aedf4ee9bfdd779a0d0d6978fe53fc7",
-    title: "Community Outreach",
-    altText: "Community Outreach",
+      "/images/carousel/success.png",
+    title: "Success Stories",
+    altText: "Success Stories",
   },
 ];
 
@@ -61,7 +49,7 @@ export const FeaturesCarousel: FC = () => {
         aria-label="Previous feature"
       >
         <img
-          src="https://cdn.builder.io/api/v1/image/assets/TEMP/91b7dc755b18b5a28c33a7208450cfa43b959ae1"
+          src="/images/assets/left.png"
           alt="Previous"
           className="w-[100px] h-[100px] cursor-pointer max-sm:w-[60px] max-sm:h-[60px]"
           loading="lazy"
@@ -86,7 +74,7 @@ export const FeaturesCarousel: FC = () => {
         aria-label="Next feature"
       >
         <img
-          src="https://cdn.builder.io/api/v1/image/assets/TEMP/3906d11ea7d5918ba358e53d13789a0cd36f9e49"
+          src="/images/assets/right.png"
           alt="Next"
           className="w-[100px] h-[100px] cursor-pointer max-sm:w-[60px] max-sm:h-[60px]"
           loading="lazy"

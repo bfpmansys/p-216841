@@ -8,13 +8,13 @@ import { ChatButton } from "@/components/layout/ChatButton";
 const Login: FC = () => {
   return (
     <div className="min-h-screen bg-white font-['Poppins']">
-      <Header />
-      <main className="flex min-h-[calc(100vh-116px)] max-sm:min-h-[calc(100vh-80px)]">
-        <div className="hidden md:flex w-1/2 bg-gray-100">
+      <Header/>
+      <main className="flex mt-12 min-h-[calc(100vh-200px)] max-sm:min-h-[calc(100vh-100px)]">
+        <div className="hidden md:flex w-1/2 justify-center items-center">
           <img
-            src="/lovable-uploads/fa06cbd2-5b53-4d6d-a5bf-da09d22e5f1c.png"
+            src="/images/hero.png"
             alt="BFP Team"
-            className="w-full h-full object-cover"
+            className="w-full h-half object-cover"
           />
         </div>
         <div className="w-full md:w-1/2 flex items-center justify-center p-8">
@@ -23,6 +23,7 @@ const Login: FC = () => {
       </main>
       <ChatButton />
     </div>
+
   );
 };
 

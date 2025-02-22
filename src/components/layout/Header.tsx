@@ -20,14 +20,12 @@ export const Header: FC = () => {
   return (
     <header className="flex justify-between items-center h-[116px] bg-white px-10 py-0 border-2 border-solid border-black max-md:px-5 max-md:py-0 max-sm:h-20 max-sm:px-[15px] max-sm:py-0">
       <Link to="/" className="flex items-center gap-5">
-        <img
-          src="https://cdn.builder.io/api/v1/image/assets/TEMP/28ec74ab6861245638ef0138e32ba7d04a5dc53e"
-          alt="V-Fire Logo"
-          className="w-[65px] h-[86px] shadow-[0_4px_4px_rgba(0,0,0,0.25)] max-sm:w-[45px] max-sm:h-[60px]"
-          loading="lazy"
-        />
+        <img src="/images/logo.png" alt="Logo" />
+
         <span className="text-2xl font-semibold text-[red] max-sm:hidden">
-          V-FIRE INSPECT
+          V-FIRE <span className="text-2xl font-semibold text-[black] max-sm:hidden">
+          INSPECT
+        </span>
         </span>
       </Link>
 

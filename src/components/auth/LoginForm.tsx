@@ -1,4 +1,4 @@
-
+import { Mail, Lock } from 'lucide-react';
 import { FC, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
@@ -83,20 +83,20 @@ export const LoginForm: FC = () => {
     }
   };
 
-  return (
-    <div className="w-full max-w-[400px] p-6 border-2 border-black rounded-lg">
-      <div className="flex flex-col items-center mb-8">
-        <img
-          src="https://cdn.builder.io/api/v1/image/assets/TEMP/28ec74ab6861245638ef0138e32ba7d04a5dc53e"
-          alt="V-Fire Logo"
-          className="w-16 h-16 mb-4"
-        />
-        <h1 className="text-2xl font-bold text-[#FE623F]">LOG IN</h1>
-      </div>
 
-      <form onSubmit={handleLogin} className="space-y-6">
-        <div className="space-y-2">
-          <Label htmlFor="email">E-mail:</Label>
+return (
+  <div className="w-full max-w-[480px] p-8 border-2 border-gray-400 rounded-3xl">
+    <div className="flex flex-col items-center mb-8">
+      <img src="/images/logo.png" alt="V-Fire Logo" className="w-16 h-20 mb-4" />
+      <h1 className="text-4xl font-bold text-[#FF0000]">LOG IN</h1>
+    </div>
+
+    <form onSubmit={handleLogin} className="space-y-6">
+      {/* Email Input Field */}
+      <div className="space-y-2">
+        <Label htmlFor="email">E-mail:</Label>
+        <div className="relative">
+          <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />  {/* Mail Icon */}
           <Input
             id="email"
             type="email"
@@ -104,71 +104,80 @@ export const LoginForm: FC = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="bg-gray-100"
+            className="bg-gray-100 pl-10" // Adding left padding to create space for icon
             disabled={isLoading}
           />
         </div>
+      </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="password">Password:</Label>
-          <div className="relative">
-            <Input
-              id="password"
-              type={showPassword ? "text" : "password"}
-              placeholder="Enter your Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="bg-gray-100 pr-10"
-              disabled={isLoading}
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2"
-              aria-label={showPassword ? "Hide password" : "Show password"}
-            >
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
-          </div>
-        </div>
-
-        <div className="text-right">
+      {/* Password Input Field */}
+      <div className="space-y-2">
+        <Label htmlFor="password">Password:</Label>
+        <div className="relative">
+          <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />  {/* Lock Icon */}
+          <Input
+            id="password"
+            type={showPassword ? "text" : "password"}
+            placeholder="Enter your Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="bg-gray-100 pl-10 pr-10"
+            disabled={isLoading}
+          />
           <button
             type="button"
-            onClick={handleMagicLink}
-            className="text-sm text-gray-600 hover:underline"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-1/2 transform -translate-y-1/2"
+            aria-label={showPassword ? "Hide password" : "Show password"}
           >
-            Forgot Password?
+            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
           </button>
         </div>
+      </div>
 
+      {/* Other Form Fields */}
+      <div className="text-left">
+        <button
+          type="button"
+          onClick={handleMagicLink}
+          className="text-sm italic hover:underline"
+        >
+          Forgot Password?
+        </button>
+      </div>
+
+      <div className="flex justify-center">
         <button
           type="submit"
-          className="w-full bg-[#FE623F] text-white py-2 rounded-lg hover:bg-[#FE623F]/90 transition-colors disabled:opacity-50"
+          className="w-[150px] bg-[#FE623F] text-white py-2 rounded-2xl hover:bg-[#FE623F]/90 transition-colors disabled:opacity-50 font-bold font-['Poppins']"
           disabled={isLoading}
         >
           {isLoading ? "Loading..." : "LOG IN"}
         </button>
+      </div>
 
-        <div className="text-center text-sm">
-          <span className="text-gray-600">No Account Yet? </span>
-          <Link to="/register" className="text-[#FE623F] hover:underline">
-            Register Here
+
+
+      <div className="text-center text-sm italic">
+        <span className="">No Account Yet? </span>
+        <Link to="/register" className="text-[#FE623F] hover:underline">
+          Register Here
+        </Link>
+      </div>
+
+      <div className="text-center text-xs ">
+        <p>
+          By continuing, you agree to
+          <br />
+          V-fire inspect{" "}
+          <Link to="/terms" className="text-[#FE623F] hover:underline">
+            Terms and Conditions
           </Link>
-        </div>
+        </p>
+      </div>
+    </form>
+  </div>
+);
 
-        <div className="text-center text-xs text-gray-500">
-          <p>
-            By continuing, you agree to
-            <br />
-            V-fire inspect{" "}
-            <Link to="/terms" className="text-[#FE623F] hover:underline">
-              Terms and Conditions
-            </Link>
-          </p>
-        </div>
-      </form>
-    </div>
-  );
 };

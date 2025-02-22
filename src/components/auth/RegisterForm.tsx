@@ -75,20 +75,16 @@ export const RegisterForm: FC = () => {
   };
 
   return (
-    <div className="w-full max-w-[400px] bg-white p-8 rounded-3xl shadow-lg">
+    <div className="w-full max-w-[480px] p-8 border-2 border-gray-400 rounded-3xl">
       <div className="flex flex-col items-center mb-6">
-        <img
-          src="/lovable-uploads/29214100-233c-41db-bd47-373ba4fa4cb3.png"
-          alt="V-Fire Logo"
-          className="w-8 h-10 mb-2"
-        />
-        <h1 className="text-2xl font-bold text-[#FF0000]">REGISTER ACCOUNT</h1>
-        <div className="flex items-center gap-2 mt-2">
+        <img src="/images/logo.png" alt="V-Fire Logo" className="w-16 h-20 mb-4" />
+        <h1 className="text-4xl font-bold text-[#FF0000]">REGISTER ACCOUNT</h1>
+        <div className="flex items-center mt-2">
           <div className="flex items-center">
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step === 1 ? 'bg-[#FF0000] text-white' : 'bg-gray-300'}`}>
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step >= 1 ? 'bg-[#FF0000] text-white' : 'bg-gray-300'}`}>
               1
             </div>
-            <div className={`w-16 h-1 ${step === 1 ? 'bg-[#FF0000]' : 'bg-gray-300'}`} />
+            <div className={`w-16 h-1 ${step >= 1 ? 'bg-[#FF0000]' : 'bg-gray-300'}`} />
           </div>
           <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step === 2 ? 'bg-[#FF0000] text-white' : 'bg-gray-300'}`}>
             2
@@ -109,7 +105,7 @@ export const RegisterForm: FC = () => {
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
                 required
-                className="bg-gray-100"
+                className="bg-gray-100 rounded-2xl"
                 disabled={isLoading}
               />
             </div>
@@ -123,7 +119,7 @@ export const RegisterForm: FC = () => {
                 placeholder="Enter Middle Name"
                 value={middleName}
                 onChange={(e) => setMiddleName(e.target.value)}
-                className="bg-gray-100"
+                className="bg-gray-100 rounded-2xl"
                 disabled={isLoading}
               />
             </div>
@@ -138,7 +134,7 @@ export const RegisterForm: FC = () => {
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
                 required
-                className="bg-gray-100"
+                className="bg-gray-100 rounded-2xl"
                 disabled={isLoading}
               />
             </div>
@@ -154,15 +150,16 @@ export const RegisterForm: FC = () => {
                   value={birthday}
                   onChange={(e) => setBirthday(e.target.value)}
                   required
-                  className="bg-gray-100"
+                  max={new Date().toISOString().split("T")[0]} // Prevents selecting future dates
+                  className="bg-gray-100 rounded-lg"
                   disabled={isLoading}
                 />
-                <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={20} />
+                {/* <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={20} /> */}
               </div>
             </div>
 
             <div className="flex justify-between items-center mt-6">
-              <div className="text-sm">
+              <div className="text-sm italic">
                 Already have an Account?{" "}
                 <Link to="/login" className="text-[#FF0000] hover:underline">
                   Log in
@@ -171,10 +168,10 @@ export const RegisterForm: FC = () => {
               <button
                 type="button"
                 onClick={() => setStep(2)}
-                className="bg-[#FF0000] text-white px-6 py-2 rounded-full hover:bg-red-600 transition-colors"
+                className="bg-[#FE623F] flex items-center gap-2 px-2 py-1 text-white px-6 py-2 rounded-full hover:bg-[#FE623F]/90 transition-colors disabled:opacity-50 font-['Poppins']"
                 disabled={isLoading}
               >
-                Next
+                Next<span className="text-lt">&gt;</span> 
               </button>
             </div>
           </>
@@ -191,7 +188,7 @@ export const RegisterForm: FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="bg-gray-100"
+                className="bg-gray-100 rounded-2xl"
                 disabled={isLoading}
               />
             </div>
@@ -208,7 +205,7 @@ export const RegisterForm: FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="bg-gray-100 pr-10"
+                  className="bg-gray-100 rounded-2xl pr-10"
                   disabled={isLoading}
                 />
                 <button
@@ -220,11 +217,11 @@ export const RegisterForm: FC = () => {
                 </button>
               </div>
               <ul className="text-xs text-gray-500 mt-1 space-y-1 pl-4">
-                <li>Should have at least 8 characters</li>
-                <li>Should have at least 1 upper case character</li>
-                <li>Should have at least 1 lower case character</li>
-                <li>Should have at least 1 number</li>
-                <li>Should have at least 1 special character</li>
+                <li> - Should have at least 8 characters</li>
+                <li> - Should have at least 1 upper case character</li>
+                <li> - Should have at least 1 lower case character</li>
+                <li> - Should have at least 1 number</li>
+                <li> - Should have at least 1 special character</li>
               </ul>
             </div>
 
@@ -240,7 +237,7 @@ export const RegisterForm: FC = () => {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
-                  className="bg-gray-100 pr-10"
+                  className="bg-gray-100 rounded-2xl pr-10"
                   disabled={isLoading}
                 />
                 <button
@@ -254,21 +251,25 @@ export const RegisterForm: FC = () => {
             </div>
 
             <div className="flex justify-between items-center mt-6">
+              {/* Return Button with background and hover */}
               <button
                 type="button"
                 onClick={() => setStep(1)}
-                className="text-gray-600 hover:text-gray-800"
+                className="bg-[#FE623F] text-white flex items-center gap-2 px-2 py-1 rounded-full hover:bg-[#E55635] transition-colors disabled:opacity-50 font-['Poppins']"
               >
-                Return
+                <span className="text-lg">&lt;</span> Prev 
               </button>
+
+              {/* Register Button */}
               <button
                 type="submit"
-                className="bg-[#FF0000] text-white px-6 py-2 rounded-full hover:bg-red-600 transition-colors disabled:opacity-50"
+                className="bg-[#FE623F] text-white px-6 py-2 rounded-full hover:bg-[#E55635] transition-colors disabled:opacity-50 font-['Poppins']"
                 disabled={isLoading}
               >
                 {isLoading ? "Registering..." : "Register"}
               </button>
             </div>
+
 
             <p className="text-xs text-center text-gray-500 mt-4">
               By continuing, you agree to V-fire{" "}

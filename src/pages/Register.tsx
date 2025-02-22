@@ -6,10 +6,19 @@ import { ChatButton } from "@/components/layout/ChatButton";
 
 const Register: FC = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 font-['Poppins']">
+    <div className="min-h-screen font-['Poppins']">
       <Header />
-      <main className="flex items-center justify-center min-h-[calc(100vh-116px)] max-sm:min-h-[calc(100vh-80px)] p-4">
-        <RegisterForm />
+      <main className="flex mt-12 min-h-[calc(100vh-200px)] max-sm:min-h-[calc(100vh-100px)]">
+        <div className="hidden md:flex w-1/2 justify-center items-center">
+          <img
+            src="/images/hero.png"
+            alt="BFP Team"
+            className="w-full h-half object-cover"
+          />
+        </div>
+        <div className="w-full md:w-1/2 flex items-center justify-center p-8">
+          <RegisterForm />
+        </div>
       </main>
       <ChatButton />
     </div>
