@@ -6,9 +6,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Building2, FileText, Building, Store } from "lucide-react";
+import { Home, Building2, FileText, Building, Store } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
 interface ApplicationTypeModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -22,28 +21,28 @@ export const ApplicationTypeModal: FC<ApplicationTypeModalProps> = ({
 
   const applicationTypes = [
     {
-      title: "New Business Permit",
-      description: "Apply for a new business permit for your establishment",
-      icon: Building2,
-      type: "new_business",
-    },
-    {
-      title: "Annual Business Permit",
-      description: "Renew your existing business permit",
-      icon: FileText,
-      type: "annual",
-    },
-    {
-      title: "Occupancy Permit",
-      description: "Get an occupancy permit for your establishment",
-      icon: Building,
+      title: "Fire Safety Inspection Certificate (FSIC For Occupancy Permit)",
+      description: "Apply for Occupancy Permit",
+      icon: Home,
       type: "occupancy",
     },
     {
-      title: "Special Permit",
-      description: "Apply for special permits and certifications",
-      icon: Store,
-      type: "special",
+      title: "Fire Safety Inspection Certificate (FSIC For Business Permit)",
+      description: "Apply for Business Certificate",
+      icon: Building2,
+      type: "business",
+    },
+    {
+      title: "Fire Safety Evaluation Clearance (FSEC)",
+      description: "Apply for Evaluation",
+      icon: FileText,
+      type: "clearance",
+    },
+    {
+      title: "OTHERS",
+      description: "Apply for Other Certificates",
+      icon: FileText,
+      type: "others",
     },
   ];
 
@@ -60,6 +59,7 @@ export const ApplicationTypeModal: FC<ApplicationTypeModalProps> = ({
             Select Application Type
           </DialogTitle>
         </DialogHeader>
+        
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
           {applicationTypes.map((type) => (
             <button

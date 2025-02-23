@@ -90,7 +90,7 @@ const RequirementsUpload: FC = () => {
             <h2 className="font-semibold text-lg">APPLICATION REQUIREMENTS</h2>
             <div className="flex gap-2 text-sm text-gray-500">
               <div className="flex items-center gap-2 opacity-50">
-                <div className="w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center">1</div>
+                <div className="w-6 h-6 rounded-full  bg-[#FF6347] text-white flex items-center justify-center">1</div>
                 <span>Fill out the Form</span>
               </div>
               <div className="flex items-center gap-2">

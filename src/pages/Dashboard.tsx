@@ -43,9 +43,13 @@ const Dashboard: FC = () => {
                   <h2 className="font-semibold text-lg"></h2>
                   <button 
                     onClick={() => setIsApplicationModalOpen(true)}
-                    className="bg-[#FF6347] text-white px-4 py-2 rounded-lg text-sm hover:bg-[#FF6347]/90 transition-colors"
+                    className="bg-[#FF6347] flex gap-3 text-white px-4 py-2 rounded-lg text-sm hover:bg-[#FF6347]/90 transition-colors"
                   >
-                    + APPLY NEW ESTABLISHMENT
+                    <img
+                      src="/images/icons/addIcon.png"
+                      alt="Add Icon"
+                      className="aspect-[1] object-contain w-5"
+                    />APPLY NEW ESTABLISHMENT
                   </button>
                 </div>
                 <EstablishmentCard

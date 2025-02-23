@@ -1,9 +1,20 @@
-
 import { FC, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ChevronLeft } from "lucide-react";
+
+import { ProgressBar } from "@/components/fsec/ProgressBar";
+import { FormSection } from "@/components/fsec/FormSection";
+import { InputField } from "@/components/fsec/InputField";
+import { MapLocation } from "@/components/fsec/MapLocation";
+import { SignatureUpload } from "@/components/fsec/SignatureUpload";
+import { RequirementsUpload } from "@/components/fsec/RequirementsUpload";
+import { ConfirmationPage } from "@/components/fsec/ConfirmationPage";
+import { FSECFormData } from "@/components/fsec/types";
+import { useToast } from "@/hooks/use-toast";
+
+import { DashboardNavbar } from "@/components/dashboard/DashboardNavbar";
 
 const VALENZUELA_BARANGAYS = [
   "Arkong Bato",
@@ -39,262 +50,362 @@ const VALENZUELA_BARANGAYS = [
   "Wawang Pulo"
 ];
 
-const ApplicationForm: FC = () => {
-  const { type } = useParams<{ type: string }>();
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    establishmentName: "",
-    ownerName: "",
-    representativeName: "",
-    tradeName: "",
-    occupancyType: "",
-    totalFloorArea: "",
-    numberOfStoreys: "",
-    unitNo: "",
-    buildingName: "",
-    streetName: "",
-    barangay: "",
-    landline: "",
-    contactNumber: "",
-    signature: null as File | null,
+// Get today's date in YYYY-MM-DD format
+const today = new Date().toISOString().split("T")[0];
+
+const ApplicationForm = () => {
+  const [currentStep, setCurrentStep] = useState(1);
+  const { toast } = useToast();
+  const [formData, setFormData] = useState<FSECFormData>({
+    establishmentName: "Sample Establishment",
+    ownerName: "Juan Dela Cruz",
+    representativeName: "Maria Clara",
+    occupant: "10",
+    occupancyType: "Restaurant",
+    floorArea: "100",
+    storeyCount: "2",
+    address: "Pamantasan ng Lungsod ng Valenzuela",
+    region: "National Capital Region (NCR)",
+    province: "Metro Manila",
+    city: "Valenzuela",
+    barangay: "Maysan",
+    mapLocation: "",
+    landline: "02-1234567",
+    contactNumber: "09123456789",
+    signature: null,
+    date: today,
+    uploadedFiles: {},
   });
 
-  const getFormTitle = () => {
-    switch (type) {
-      case "new_business":
-        return "NEW BUSINESS PERMIT";
-      case "annual":
-        return "ANNUAL BUSINESS PERMIT";
-      case "occupancy":
-        return "OCCUPANCY PERMIT";
-      case "special":
-        return "SPECIAL PERMIT";
-      default:
-        return "PERMIT APPLICATION";
-    }
+  const handleInputChange = (field: keyof FSECFormData) => 
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      let value: string = event.target.value;
+  
+      // Ensure numeric fields are always positive numbers
+      if (["floorArea", "storeyCount", "occupant"].includes(field)) {
+        const numValue = Number(value);
+        if (isNaN(numValue) || numValue < 1) {
+          value = ""; // Prevent NaN and negative values
+        } else {
+          value = numValue.toString(); // Store as string
+        }
+      }
+  
+      setFormData((prev) => ({
+        ...prev,
+        [field]: value,
+      }));
+  };
+    
+  const handleLocationChange = (lat: number, lng: number) => {
+    setFormData(prev => ({
+      ...prev,
+      mapLocation: `${lat},${lng}`
+    }));
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  const [signature, setSignature] = useState<File | null>(formData.signature || null);
+
+  const handleSignatureUpload = (file: File) => {
+    setSignature(file); // Store in local state first
+    setFormData((prev) => ({
+      ...prev,
+      signature: file, // Store in formData to persist across steps
+    }));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0]) {
-      setFormData((prev) => ({ ...prev, signature: e.target.files![0] }));
-    }
-  };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Store form data in localStorage for now, we'll implement the full submission later
-    localStorage.setItem('applicationFormData', JSON.stringify(formData));
-    navigate(`/dashboard/apply/${type}/requirements`);
+  
+    // Required fields validation
+    const requiredFields = [
+      "establishmentName",
+      "ownerName",
+      "representativeName",
+      "occupancyType",
+      "floorArea",
+      "storeyCount",
+      "address",
+      "barangay",
+      "contactNumber",
+      "date",
+    ];
+  
+    const missingFields = requiredFields.filter(
+      (field) => !formData[field as keyof FSECFormData]
+    );
+  
+    if (missingFields.length > 0) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields",
+        variant: "destructive",
+      });
+      return;
+    }
+  
+    // Validate Signature File
+    if (!formData.signature) {
+      toast({
+        title: "Error",
+        description: "Please upload a signature file.",
+        variant: "destructive",
+      });
+      return;
+    }
+  
+    // Validate file size (max 5MB)
+    if (formData.signature.size > 5 * 1024 * 1024) {
+      toast({
+        title: "Error",
+        description: "Signature file must not exceed 5MB.",
+        variant: "destructive",
+      });
+      return;
+    }
+  
+    // If validation passes, proceed to next step
+    setCurrentStep(2);
+    window.scrollTo(0, 0);
   };
+  
 
-  return (
-    <div className="min-h-screen bg-[#FFF5F2]">
-      <div className="bg-[#FF6347] px-6 py-4">
-        <button
-          onClick={() => navigate("/dashboard")}
-          className="text-white flex items-center gap-2 mb-2"
-        >
-          <ChevronLeft size={20} />
-          <span>Back</span>
-        </button>
-        <h1 className="text-white text-xl font-semibold">{getFormTitle()}</h1>
-      </div>
+  // Compute full address for map
+  const fullAddress = `${formData.address}, ${formData.barangay}, ${formData.city}, Philippines`;
 
-      <div className="container mx-auto p-6">
-        <div className="bg-white rounded-lg p-6 shadow-sm">
-          <div className="space-y-1 mb-6">
-            <h2 className="font-semibold text-lg">APPLICATION FORM</h2>
-            <div className="flex gap-2 text-sm text-gray-500">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-full bg-[#FF6347] text-white flex items-center justify-center">1</div>
-                <span>Fill out the Form</span>
+  const renderStep = () => {
+    switch (currentStep) {
+      case 1:
+        return (
+          <form onSubmit={handleSubmit}>
+            <FormSection
+              title="GENERAL INFORMATION"
+              subtitle="Type in the required information"
+            >
+              <InputField
+                label="Name of Establishment"
+                required
+                value={formData.establishmentName}
+                onChange={handleInputChange("establishmentName")}
+              />
+              <div className="flex gap-5 max-md:flex-col max-md:gap-2.5">
+                <InputField
+                  label="Name of Owner"
+                  required
+                  value={formData.ownerName}
+                  onChange={handleInputChange("ownerName")}
+                />
+                <InputField
+                  label="Name of Representative"
+                  required
+                  value={formData.representativeName}
+                  onChange={handleInputChange("representativeName")}
+                />
+                <InputField
+                  label="Number of Occupant"
+                  required
+                  type="number"
+                  value={formData.occupant.toString()} // Convert to string
+                  onChange={handleInputChange("occupant")}
+                />
               </div>
-              <div className="flex items-center gap-2 opacity-50">
-                <div className="w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center">2</div>
-                <span>Upload the Requirements</span>
-              </div>
-              <div className="flex items-center gap-2 opacity-50">
-                <div className="w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center">3</div>
-                <span>Confirm and Submit</span>
-              </div>
-            </div>
-          </div>
+              <div className="flex gap-5 max-md:flex-col max-md:gap-2.5">
+                <InputField
+                  label="Type of Occupancy (Business Nature)"
+                  required
+                  value={formData.occupancyType}
+                  onChange={handleInputChange("occupancyType")}
+                />
+                
+                <InputField
+                  label="Total Floor Area (m²)"
+                  required
+                  type="number"
+                  value={formData.floorArea.toString()} // Convert to string
+                  onChange={handleInputChange("floorArea")}
+                />
 
-          <form onSubmit={handleSubmit} className="space-y-8">
-            <div className="space-y-4">
-              <h3 className="font-semibold">GENERAL INFORMATION</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="establishmentName">Name of Establishment *</Label>
-                  <Input
-                    id="establishmentName"
-                    name="establishmentName"
-                    required
-                    value={formData.establishmentName}
-                    onChange={handleInputChange}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="ownerName">Name of Owner *</Label>
-                  <Input
-                    id="ownerName"
-                    name="ownerName"
-                    required
-                    value={formData.ownerName}
-                    onChange={handleInputChange}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="representativeName">Name of Representative</Label>
-                  <Input
-                    id="representativeName"
-                    name="representativeName"
-                    value={formData.representativeName}
-                    onChange={handleInputChange}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="tradeName">Trade Name</Label>
-                  <Input
-                    id="tradeName"
-                    name="tradeName"
-                    value={formData.tradeName}
-                    onChange={handleInputChange}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="occupancyType">Type of Occupancy *</Label>
-                  <Input
-                    id="occupancyType"
-                    name="occupancyType"
-                    required
-                    value={formData.occupancyType}
-                    onChange={handleInputChange}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="totalFloorArea">Total Floor Area (m²) *</Label>
-                  <Input
-                    id="totalFloorArea"
-                    name="totalFloorArea"
-                    type="number"
-                    required
-                    value={formData.totalFloorArea}
-                    onChange={handleInputChange}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="numberOfStoreys">No. of Storey *</Label>
-                  <Input
-                    id="numberOfStoreys"
-                    name="numberOfStoreys"
-                    type="number"
-                    required
-                    value={formData.numberOfStoreys}
-                    onChange={handleInputChange}
-                  />
-                </div>
-              </div>
-            </div>
+                <InputField
+                  label="No of Storey"
+                  required
+                  type="number"
+                  value={formData.storeyCount.toString()} // Convert to string
+                  onChange={handleInputChange("storeyCount")}
+                />
 
-            <div className="space-y-4">
-              <h3 className="font-semibold">EXACT ADDRESS</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="unitNo">Unit no., Block no./ Building Name / Street Name</Label>
-                  <Input
-                    id="unitNo"
-                    name="streetName"
-                    value={formData.streetName}
-                    onChange={handleInputChange}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="barangay">Barangay *</Label>
+              </div>
+            </FormSection>
+
+            <FormSection
+              title="EXACT ADDRESS"
+              subtitle="Type in the required information"
+            >
+              <div className="flex gap-5 max-md:flex-col max-md:gap-2.5">
+                <InputField
+                  label="Region"
+                  required
+                  value={formData.region}
+                  onChange={handleInputChange("region")}
+                  disabled
+                />
+                <InputField
+                  label="Province"
+                  required
+                  value={formData.province}
+                  onChange={handleInputChange("province")}
+                  disabled
+                />
+              </div>
+              <div className="flex gap-5 max-md:flex-col max-md:gap-2.5">
+                <InputField
+                  label="City"
+                  required
+                  value={formData.city}
+                  onChange={handleInputChange("city")}
+                  disabled
+                />
+                <div className="flex-1 mb-5">
+                  <div className="text-base mb-[5px]">
+                    <span>Barangay</span>
+                    <span className="text-[#f00]">*</span>
+                  </div>
                   <select
-                    id="barangay"
-                    name="barangay"
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    required
                     value={formData.barangay}
-                    onChange={handleInputChange}
+                    onChange={(e) => handleInputChange("barangay")({ target: { value: e.target.value } } as any)}
+                    className="w-full bg-transparent outline-none"
                   >
-                    <option value="">Select Barangay</option>
-                    {VALENZUELA_BARANGAYS.map((barangay) => (
+                    <option value="" disabled selected>Select Barangay</option>
+                    {VALENZUELA_BARANGAYS.map(barangay => (
                       <option key={barangay} value={barangay}>
                         {barangay}
                       </option>
                     ))}
                   </select>
-                </div>
-                <div className="col-span-2">
-                  <div className="bg-gray-100 p-4 rounded-lg">
-                    <p className="text-sm text-gray-600 mb-2">Region: National Capital Region NCR</p>
-                    <p className="text-sm text-gray-600 mb-2">Province: METRO MANILA</p>
-                    <p className="text-sm text-gray-600">City: Valenzuela City</p>
-                  </div>
+                  <div className="h-px bg-black mt-[5px]" />
                 </div>
               </div>
-            </div>
-
-            <div className="space-y-4">
-              <h3 className="font-semibold">CONTACT DETAILS</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="landline">Landline</Label>
-                  <Input
-                    id="landline"
-                    name="landline"
-                    value={formData.landline}
-                    onChange={handleInputChange}
-                    placeholder="(000) 000-0000"
-                  />
+              
+              <InputField
+                label="Unit no., Block no./ Building Name / Street Name"
+                required
+                value={formData.address}
+                onChange={handleInputChange("address")}
+              />
+              
+              <div className="mt-5">
+                <div className="text-base mb-[5px]">
+                  <span>Map Location</span>
+                  <span className="text-[#f00]">*</span>
                 </div>
-                <div>
-                  <Label htmlFor="contactNumber">Contact Number</Label>
-                  <Input
-                    id="contactNumber"
-                    name="contactNumber"
-                    value={formData.contactNumber}
-                    onChange={handleInputChange}
-                    placeholder="09XX XXX XXXX"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <h3 className="font-semibold">ADDITIONAL DETAILS</h3>
-              <div>
-                <Label htmlFor="signature">Upload Signature (over Printed Name)</Label>
-                <Input
-                  id="signature"
-                  name="signature"
-                  type="file"
-                  onChange={handleFileChange}
-                  accept="image/*"
+                <MapLocation
+                  address={fullAddress}
+                  onLocationChange={handleLocationChange}
                 />
               </div>
+            </FormSection>
+
+            <div className="flex gap-[30px] mt-5 max-md:flex-col">
+              <FormSection
+                title="CONTACT DETAILS"
+                subtitle="Type in the owner / representative of your contact information"
+                className="flex-1"
+              >
+                <div className="flex gap-5 max-md:flex-col max-md:gap-2.5">
+                  <InputField
+                    label="Landline"
+                    value={formData.landline}
+                    onChange={handleInputChange("landline")}
+                  />
+                  <InputField
+                    label="Contact Number"
+                    required
+                    value={formData.contactNumber}
+                    onChange={handleInputChange("contactNumber")}
+                  />
+                </div>
+              </FormSection>
+
+              <FormSection title="ADDITIONAL DETAILS" className="flex-1">
+                <SignatureUpload onFileSelected={handleSignatureUpload} />
+                <div className="mt-5">
+                <InputField disabled
+                  label="Date"
+                  required
+                  type="date"
+                  value={formData.date}
+                  onChange={handleInputChange("date")}
+                />
+              </div>
+              </FormSection>
             </div>
 
-            <div className="flex justify-end">
+            <div className="button flex justify-end bg-[#FFECDB] p-5 rounded-2xl max-md:p-[15px]">
               <button
                 type="submit"
-                className="bg-[#FF6347] text-white px-6 py-2 rounded-lg hover:bg-[#FF6347]/90 transition-colors"
+                className="bg-[#FE623F] text-white font-bold text-base px-6 py-3 rounded-xl shadow-md hover:bg-[#e6552e] transition-all"
               >
                 PROCEED
               </button>
             </div>
           </form>
-        </div>
+        );
+      case 2:
+        return (
+          <RequirementsUpload
+            formData={formData}
+            setFormData={setFormData}
+            setCurrentStep={setCurrentStep}
+          />
+        );
+      case 3:
+        return (
+          <ConfirmationPage
+            formData={formData}
+            setCurrentStep={setCurrentStep}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
+
+  const navigate = useNavigate();
+  
+  return (
+    <div>
+      {/* Dashboard Navbar */}
+      <DashboardNavbar />
+      <div className="max-w-[1440px] bg-white mx-auto my-0">
+        <main className="px-10 py-5 max-sm:px-2.5 max-sm:py-2.5">
+          <div className="flex items-center bg-[#FE623F] p-5 rounded-[16px_16px_0_0]">
+          <button
+            onClick={() => navigate("/dashboard")}
+            className="text-white text-3xl font-bold"
+          >
+            <ChevronLeft size={30} className="text-white" />
+          </button>
+
+            <h1 className="text-white text-2xl font-bold max-sm:text-xl mx-auto text-center ">
+              FIRE SAFETY EVALUATION CLEARANCE
+            </h1>
+          </div>
+
+          <div className="bg-[#FFECDB] p-5 max-md:p-[15px]">
+            <h2 className="text-base font-bold mb-5">
+              APPLICATION FORM : FIRE SAFETY EVALUATION CLEARANCE (FSEC)
+            </h2>
+
+            <ProgressBar currentStep={currentStep} />
+
+            {renderStep()}
+          </div>
+        </main>
       </div>
     </div>
   );
+  
 };
 
 export default ApplicationForm;
