@@ -18,34 +18,30 @@ export const Header: FC = () => {
   };
 
   return (
-    <header className="flex justify-between items-center h-[116px] bg-white px-10 py-0 border-2 border-solid border-black max-md:px-5 max-md:py-0 max-sm:h-20 max-sm:px-[15px] max-sm:py-0">
-      <Link to="/" className="flex items-center gap-5">
-        <img src="/images/logo.png" alt="Logo" />
-
-        <span className="text-2xl font-semibold text-[red] max-sm:hidden">
-          V-FIRE <span className="text-2xl font-semibold text-[black] max-sm:hidden">
-          INSPECT
-        </span>
-        </span>
+    <header className="flex justify-between items-center h-20 bg-white px-8 border-b border-gray-300 shadow-sm max-md:px-5 max-md:py-0 max-sm:h-20 max-sm:px-[15px] max-sm:py-0">
+      <Link to="/" className="flex items-center gap-1">
+        <img src="/images/logo.png" alt="Logo" className="h-12" />
+        <span className="text-2xl font-bold text-red-600 max-sm:text-base max-sm:hidden">V-FIRE</span>
+        <span className="text-1xl font-bold text-black max-sm:text-base max-sm:hidden">INSPECT</span>
       </Link>
 
       {/* Desktop Navigation */}
       <nav className="hidden md:flex items-center gap-[50px] max-md:gap-[30px]">
         <button
           onClick={() => scrollToSection("home")}
-          className="text-2xl font-semibold text-black max-md:text-xl"
+          className="text-1xl font-semibold text-black max-md:text-xl"
         >
           HOME
         </button>
         <button
           onClick={() => scrollToSection("faqs")}
-          className="text-2xl font-semibold text-black max-md:text-xl"
+          className="text-1xl font-semibold text-black max-md:text-xl"
         >
           FAQS
         </button>
         <button
           onClick={() => scrollToSection("about")}
-          className="text-2xl font-semibold text-black max-md:text-xl"
+          className="text-1xl font-semibold text-black max-md:text-xl"
         >
           ABOUT
         </button>
@@ -74,19 +70,19 @@ export const Header: FC = () => {
           <nav className="flex flex-col items-center gap-8 pt-8">
             <button
               onClick={() => scrollToSection("home")}
-              className="text-2xl font-semibold text-black"
+              className="text-1xl font-semibold text-black"
             >
               HOME
             </button>
             <button
               onClick={() => scrollToSection("faqs")}
-              className="text-2xl font-semibold text-black"
+              className="text-1xl font-semibold text-black"
             >
               FAQS
             </button>
             <button
               onClick={() => scrollToSection("about")}
-              className="text-2xl font-semibold text-black"
+              className="text-1xl font-semibold text-black"
             >
               ABOUT
             </button>

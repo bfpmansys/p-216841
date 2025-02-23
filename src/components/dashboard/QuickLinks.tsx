@@ -1,29 +1,45 @@
+import React from "react";
 
-import { FC } from "react";
-import { FileText, Building2, ClipboardList, Inbox } from "lucide-react";
+interface QuickLinkItemProps {
+  icon: string;
+  title: string;
+}
 
-export const QuickLinks: FC = () => {
+const QuickLinkItem: React.FC<QuickLinkItemProps> = ({ icon, title }) => (
+  <div className="flex items-center gap-[17px] mb-[23px] max-sm:mb-[15px]">
+    <div className="bg-[#fe623f] w-[75px] h-[75px] flex items-center justify-center rounded-[20px] max-sm:w-[60px] max-sm:h-[60px]">
+      <img
+        src={icon}
+        alt={title}
+        className="w-10 h-10 max-sm:w-[30px] max-sm:h-[30px]"
+      />
+    </div>
+    <div className="text-xl font-semibold max-sm:text-lg">{title}</div>
+  </div>
+);
+
+export const QuickLinks = () => {
+  const links = [
+    {
+      icon: "./images/icons/applicationIcon.png",
+      title: "APPLICATION",
+    },
+    {
+      icon: "./images/icons/establishmentIcon.png",
+      title: "ESTABLISHMENT",
+    },
+    {
+      icon: "./images/icons/inboxIcon.png",
+      title: "INBOX",
+    },
+  ];
+
   return (
-    <div className="space-y-4">
-      <h2 className="font-semibold text-lg">QUICK LINKS</h2>
-      <div className="space-y-2">
-        <button className="w-full flex items-center gap-2 p-3 bg-[#FF6347] text-white rounded-lg hover:bg-[#FF6347]/90 transition-colors">
-          <FileText size={20} />
-          <span>APPLICATION</span>
-        </button>
-        <button className="w-full flex items-center gap-2 p-3 bg-[#FF6347] text-white rounded-lg hover:bg-[#FF6347]/90 transition-colors">
-          <Building2 size={20} />
-          <span>ESTABLISHMENT</span>
-        </button>
-        <button className="w-full flex items-center gap-2 p-3 bg-[#FF6347] text-white rounded-lg hover:bg-[#FF6347]/90 transition-colors">
-          <ClipboardList size={20} />
-          <span>REQUIREMENTS</span>
-        </button>
-        <button className="w-full flex items-center gap-2 p-3 bg-[#FF6347] text-white rounded-lg hover:bg-[#FF6347]/90 transition-colors">
-          <Inbox size={20} />
-          <span>INBOX</span>
-        </button>
-      </div>
+    <div className="w-3/12 max-md:w-full max-md:mb-10">
+      <h2 className="text-xl font-bold mb-[23px]">QUICK LINKS</h2>
+      {links.map((link, index) => (
+        <QuickLinkItem key={index} {...link} />
+      ))}
     </div>
   );
 };
