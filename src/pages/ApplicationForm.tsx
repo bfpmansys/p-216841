@@ -374,7 +374,7 @@ const ApplicationForm = () => {
   const navigate = useNavigate();
   
   return (
-    <div>
+    <div className="min-h-screen bg-white font-['Poppins']">
       {/* Dashboard Navbar */}
       <DashboardNavbar />
       <div className="max-w-[1440px] bg-white mx-auto my-0">

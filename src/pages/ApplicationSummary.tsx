@@ -83,7 +83,7 @@ const ApplicationSummary: FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#FFF5F2]">
+    <div className="min-h-screen bg-white font-['Poppins']">
       <div className="bg-[#FF6347] px-6 py-4">
         <button
           onClick={() => navigate(`/dashboard/apply/${type}/requirements`)}

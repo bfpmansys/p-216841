@@ -88,7 +88,7 @@ const EditProfile: FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white font-['Poppins']">
       <DashboardNavbar />
       
       <div className="bg-[#FF6347] px-6 py-4">

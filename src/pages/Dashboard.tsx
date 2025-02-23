@@ -13,7 +13,7 @@ const Dashboard: FC = () => {
   const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white font-['Poppins']">
       <div className="bg-white flex flex-col overflow-hidden pb-[47px]">
         <nav />
         <DashboardNavbar />

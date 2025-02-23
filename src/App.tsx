@@ -14,6 +14,8 @@ import NotFound from "./pages/NotFound";
 import ApplicationForm from "./pages/ApplicationForm";
 import RequirementsUpload from "./pages/RequirementsUpload";
 import ApplicationSummary from "./pages/ApplicationSummary";
+import { QuickLinks } from "./components/dashboard/QuickLinks";
+import Inbox from "./pages/Inbox";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +35,8 @@ const App = () => (
           <Route path="/dashboard/apply/:type" element={<ApplicationForm />} />
           <Route path="/dashboard/apply/:type/requirements" element={<RequirementsUpload />} />
           <Route path="/dashboard/apply/:type/summary" element={<ApplicationSummary />} />
+          <Route path="/inbox" element={<Inbox />} />
+          <Route path="/quick-links" element={<QuickLinks />} /> 
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
