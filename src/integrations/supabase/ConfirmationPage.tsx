@@ -26,110 +26,82 @@ export const ConfirmationPage: React.FC<ConfirmationPageProps> = ({
 
   const handleSubmit = async () => {
     try {
+      // Upload signature file
       let signatureFilePath = '';
-  
-      console.log("Starting submission...");
-  
-      // ✅ Upload signature file
       if (formData.signature) {
-        console.log("Uploading signature file...");
         const { data: signatureData, error: signatureError } = await supabase.storage
-          .from('requirements')
+          .from('fsec')
           .upload(`signatures/${crypto.randomUUID()}-${formData.signature.name}`, formData.signature);
-  
-        if (signatureError) {
-          console.error("Signature upload error:", signatureError);
-          throw new Error("Failed to upload signature");
-        }
-  
-        signatureFilePath = signatureData.path; // ✅ Save path
-        console.log("Signature uploaded successfully:", signatureFilePath);
+
+        if (signatureError) throw signatureError;
+        signatureFilePath = signatureData.path;
       }
-  
-      // ✅ Create application record
-      console.log("Inserting application record...");
-      const { data, error: applicationError } = await supabase
+
+      // Create application record
+      const { data: application, error: applicationError } = await supabase
         .from('applications')
         .insert({
-          application_type: "FSEC",
+          application_type: "FSEC", // Add appropriate application type
           establishment_name: formData.establishmentName,
           owner_name: formData.ownerName,
           representative_name: formData.representativeName,
           trade_name: formData.tradeName,
           occupancy_type: formData.occupancyType,
-          number_of_storeys: parseInt(formData.storeyCount),
-          total_floor_area: parseFloat(formData.floorArea),
+          number_of_storeys: parseInt(formData.storeyCount, 10),
+          total_floor_area: parseFloat(formData.floorArea), // Add total floor area
           building_name: formData.address,
           region: formData.region,
           province: formData.province,
           city: formData.city,
           barangay: formData.barangay,
+           map_location: formData.mapLocation,
           landline: formData.landline,
           contact_number: formData.contactNumber,
-          signature: signatureFilePath, // ✅ Store signature path
+          signature: signatureFilePath,
         })
-        .select("id")
+        .select()
         .single();
-  
-      if (applicationError || !data) {
-        console.error("Application insertion error:", applicationError);
-        throw new Error("Failed to insert application record");
-      }
-  
-      const applicationId = data.id;
-      console.log("Application submitted successfully with ID:", applicationId);
-  
-      // ✅ Upload requirement files
-      console.log("Uploading requirement files...");
-      await Promise.all(
-        Object.entries(formData.uploadedFiles).map(async ([type, files]) => {
-          return Promise.all(
-            files.map(async (file) => {
-              const { data: fileData, error: fileError } = await supabase.storage
-                .from('requirements')
-                .upload(`application_requirements/${crypto.randomUUID()}-${file.name}`, file);
-  
-              if (fileError) {
-                console.error("File upload error:", fileError);
-                throw new Error(`Failed to upload ${file.name}`);
-              }
-  
-              console.log(`File uploaded successfully: ${file.name}`, fileData.path);
-  
-              return supabase
-                .from('application_requirements')
-                .insert({
-                  application_id: applicationId,
-                  requirement_type: type,
-                  file_url: fileData.path,
-                  file_name: file.name,
-                });
-            })
-          );
-        })
-      );
-  
-      console.log("All requirement files uploaded successfully!");
-  
+
+      if (applicationError) throw applicationError;
+
+      // Upload requirement files
+      const requirementUploads = Object.entries(formData.uploadedFiles).map(async ([type, files]) => {
+        return Promise.all(files.map(async (file) => {
+          const { data: fileData, error: fileError } = await supabase.storage
+            .from('fsec')
+            .upload(`requirements/${crypto.randomUUID()}-${file.name}`, file);
+
+          if (fileError) throw fileError;
+
+          return supabase
+            .from('application_requirements')
+            .insert({
+              application_id: application.id,
+              requirement_type: type,
+              file_url: fileData.path,
+              file_name: file.name,
+            });
+        }));
+      });
+
+      await Promise.all(requirementUploads);
+
       toast({
         title: "Success",
         description: "Your FSEC application has been submitted successfully!",
       });
-  
-      // ✅ Redirect to dashboard
+
+      // Reset form or redirect to dashboard
       window.location.href = '/dashboard';
     } catch (error) {
-      console.error("Submission error:", error.message || error);
+      console.error('Submission error:', error);
       toast({
         title: "Error",
-        description: `Failed to submit application. ${error.message || "Please try again."}`,
+        description: "Failed to submit application. Please try again.",
         variant: "destructive",
       });
     }
   };
-  
-
-  
 
   const renderEditableField = (label: string, value: string, step: number) => (
     <div className="flex justify-between items-center py-2">

@@ -17,10 +17,11 @@ export interface FormSectionProps {
   }
   
   export interface FSECFormData {
+    tradeName: string;
     establishmentName: string;
     ownerName: string;
     representativeName: string;
-    occupant: string;
+    
     occupancyType: string;
     floorArea: string;
     storeyCount: string;
@@ -41,3 +42,14 @@ export interface FormSectionProps {
     file: File;
     preview?: string;
   }
+
+  export type Profile = {
+    id: string;
+    first_name: string;
+    last_name: string;
+    middle_name?: string;
+    birthday?: string;
+    created_at?: string;
+    updated_at?: string;
+    signature: string; // Add the signature property
+  };

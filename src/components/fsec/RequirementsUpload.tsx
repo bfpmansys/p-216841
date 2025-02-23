@@ -114,7 +114,10 @@ export const RequirementsUpload: React.FC<RequirementsUploadProps> = ({
   };
 
   const uploadedCount = getUploadedFilesCount();
-  const progress = (uploadedCount / REQUIREMENTS.length) * 100;
+  const maxFiles = 9;
+const limitedCount = Math.min(uploadedCount, maxFiles);
+const progress = (limitedCount / maxFiles) * 100;
+
 
   return (
     <div className="space-y-6">
@@ -196,22 +199,30 @@ export const RequirementsUpload: React.FC<RequirementsUploadProps> = ({
         >
           PREVIOUS
         </button>
-        <button
-          onClick={() => {
-            if (uploadedCount >= REQUIREMENTS.length) {
-              setCurrentStep(3);
-            } else {
-              toast({
-                title: "Error",
-                description: "Please upload at least one file for each requirement",
-                variant: "destructive",
-              });
-            }
-          }}
-          className="px-6 py-2 bg-[#FE623F] text-white rounded-lg hover:bg-[#ff4721] transition-colors"
-        >
-          Next
-        </button>
+        <button 
+  onClick={() => {
+    // Get missing fields where no file is uploaded
+    const missingFields = REQUIREMENTS.filter(req => 
+      !formData.uploadedFiles[req.id] || formData.uploadedFiles[req.id].length === 0
+    );
+
+    if (missingFields.length > 0) {
+      toast({
+        title: "Error",
+        description: "Please upload a file for all required fields.",
+        variant: "destructive",
+      });
+      return; // Stop the function if validation fails
+    }
+
+    // If all required files are uploaded, proceed to the next step
+    setCurrentStep(prev => prev + 1);
+  }} 
+  className="bg-[#FE623F] text-white font-bold px-6 py-3 rounded-xl"
+>
+  Next
+</button>
+
       </div>
     </div>
   );

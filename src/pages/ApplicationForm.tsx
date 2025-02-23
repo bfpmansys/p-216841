@@ -14,7 +14,10 @@ import { ConfirmationPage } from "@/components/fsec/ConfirmationPage";
 import { FSECFormData } from "@/components/fsec/types";
 import { useToast } from "@/hooks/use-toast";
 
+
+
 import { DashboardNavbar } from "@/components/dashboard/DashboardNavbar";
+import ApplicationSummary  from "@/components/fsec/ApplicationSummary";
 
 const VALENZUELA_BARANGAYS = [
   "Arkong Bato",
@@ -52,37 +55,39 @@ const VALENZUELA_BARANGAYS = [
 
 // Get today's date in YYYY-MM-DD format
 const today = new Date().toISOString().split("T")[0];
-
+const dummyImage = new File([""], "dummy.jpg", { type: "image/jpeg" });
 const ApplicationForm = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const { toast } = useToast();
   const [formData, setFormData] = useState<FSECFormData>({
-    establishmentName: "Sample Establishment",
-    ownerName: "Juan Dela Cruz",
-    representativeName: "Maria Clara",
-    occupant: "10",
-    occupancyType: "Restaurant",
-    floorArea: "100",
-    storeyCount: "2",
-    address: "Pamantasan ng Lungsod ng Valenzuela",
+    establishmentName: "",
+    ownerName: "",
+    representativeName: "",
+    tradeName: "",
+    occupancyType: "",
+    floorArea: "",
+    storeyCount: "",
+    address: "",
     region: "National Capital Region (NCR)",
     province: "Metro Manila",
     city: "Valenzuela",
-    barangay: "Maysan",
-    mapLocation: "",
-    landline: "02-1234567",
-    contactNumber: "09123456789",
-    signature: null,
+    barangay: "",
+    mapLocation: null,
+    landline: "",
+    contactNumber: "",
+    signature: dummyImage,
     date: today,
+    
     uploadedFiles: {},
   });
 
+  
   const handleInputChange = (field: keyof FSECFormData) => 
     (event: React.ChangeEvent<HTMLInputElement>) => {
       let value: string = event.target.value;
   
       // Ensure numeric fields are always positive numbers
-      if (["floorArea", "storeyCount", "occupant"].includes(field)) {
+      if (["floorArea", "storeyCount"].includes(field)) {
         const numValue = Number(value);
         if (isNaN(numValue) || numValue < 1) {
           value = ""; // Prevent NaN and negative values
@@ -104,16 +109,18 @@ const ApplicationForm = () => {
     }));
   };
 
-  const [signature, setSignature] = useState<File | null>(formData.signature || null);
+  const [signature, setSignature] = useState<File | null>(null);
+
 
   const handleSignatureUpload = (file: File) => {
-    setSignature(file); // Store in local state first
+    setSignature(file);
     setFormData((prev) => ({
       ...prev,
-      signature: file, // Store in formData to persist across steps
+      signature: file,
     }));
+    console.log("Uploaded Signature:", file); // Debugging log
   };
-
+  
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -146,14 +153,16 @@ const ApplicationForm = () => {
     }
   
     // Validate Signature File
-    if (!formData.signature) {
+    if (!(formData.signature instanceof File)) {
       toast({
         title: "Error",
-        description: "Please upload a signature file.",
+        description: "Invalid signature file. Please upload again.",
         variant: "destructive",
       });
       return;
     }
+    
+    
   
     // Validate file size (max 5MB)
     if (formData.signature.size > 5 * 1024 * 1024) {
@@ -203,11 +212,10 @@ const ApplicationForm = () => {
                   onChange={handleInputChange("representativeName")}
                 />
                 <InputField
-                  label="Number of Occupant"
+                  label="Trade name"
                   required
-                  type="number"
-                  value={formData.occupant.toString()} // Convert to string
-                  onChange={handleInputChange("occupant")}
+                  value={formData.tradeName}
+                  onChange={handleInputChange("tradeName")}
                 />
               </div>
               <div className="flex gap-5 max-md:flex-col max-md:gap-2.5">
@@ -275,7 +283,7 @@ const ApplicationForm = () => {
                     onChange={(e) => handleInputChange("barangay")({ target: { value: e.target.value } } as any)}
                     className="w-full bg-transparent outline-none"
                   >
-                    <option value="" disabled selected>Select Barangay</option>
+                    <option value="">Select Barangay</option>
                     {VALENZUELA_BARANGAYS.map(barangay => (
                       <option key={barangay} value={barangay}>
                         {barangay}
@@ -328,6 +336,8 @@ const ApplicationForm = () => {
 
               <FormSection title="ADDITIONAL DETAILS" className="flex-1">
                 <SignatureUpload onFileSelected={handleSignatureUpload} />
+                {/* <SignatureUpload onUpload={handleSignatureUpload} /> */}
+
                 <div className="mt-5">
                 <InputField disabled
                   label="Date"
@@ -365,6 +375,15 @@ const ApplicationForm = () => {
             setCurrentStep={setCurrentStep}
           />
         );
+        case 4:
+          return (
+            <ApplicationSummary
+              formData={formData}
+              setFormData={setFormData}
+              setCurrentStep={setCurrentStep}
+            />
+          );
+        
       default:
         return null;
     }
@@ -374,7 +393,7 @@ const ApplicationForm = () => {
   const navigate = useNavigate();
   
   return (
-    <div className="min-h-screen bg-white font-['Poppins']">
+    <div>
       {/* Dashboard Navbar */}
       <DashboardNavbar />
       <div className="max-w-[1440px] bg-white mx-auto my-0">

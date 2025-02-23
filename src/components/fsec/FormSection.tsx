@@ -1,5 +1,11 @@
+import React from "react";
 
-import { FormSectionProps } from "./types";
+interface FormSectionProps {
+  title: string;
+  subtitle?: string;
+  children: React.ReactNode;
+  className?: string;
+}
 
 export const FormSection: React.FC<FormSectionProps> = ({
   title,
@@ -8,10 +14,10 @@ export const FormSection: React.FC<FormSectionProps> = ({
   className = "",
 }) => {
   return (
-    <div className={`shadow-[0_4px_4px_rgba(0,0,0,0.25)] bg-white mb-5 p-5 rounded-[20px] max-sm:p-[15px] ${className}`}>
-      <div className="text-base font-bold mb-2.5">{title}</div>
-      {subtitle && <div className="text-base mb-5">{subtitle}</div>}
-      {children}
+    <div className={`bg-white p-6 shadow-sm rounded-lg ${className}`}>
+      <h2 className="text-lg font-semibold mb-1">{title}</h2>
+      {subtitle && <p className="text-sm text-gray-600 mb-4">{subtitle}</p>}
+      <div>{children}</div>
     </div>
   );
 };

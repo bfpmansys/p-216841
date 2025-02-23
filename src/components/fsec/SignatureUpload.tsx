@@ -1,5 +1,4 @@
-
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Eye } from 'lucide-react';
 
 interface SignatureUploadProps {
@@ -12,6 +11,17 @@ export const SignatureUpload: React.FC<SignatureUploadProps> = ({ onFileSelected
   const [preview, setPreview] = useState<string | null>(null);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
+  useEffect(() => {
+    // Retrieve saved signature from local storage
+    const storedSignature = localStorage.getItem("savedSignature");
+    const storedFileName = localStorage.getItem("savedSignatureName");
+
+    if (storedSignature && storedFileName) {
+      setPreview(storedSignature);
+      setFileName(storedFileName);
+    }
+  }, []);
+
   const handleClick = () => {
     fileInputRef.current?.click();
   };
@@ -23,26 +33,25 @@ export const SignatureUpload: React.FC<SignatureUploadProps> = ({ onFileSelected
       setUploadedFile(file);
       onFileSelected(file);
 
-      // Create preview URL for image files
-      if (file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setPreview(reader.result as string);
-        };
-        reader.readAsDataURL(file);
-      } else {
-        setPreview(null);
-      }
-      
-      // Clear the input value to allow uploading the same file again if needed
+      // Convert to Base64 and store in local storage
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setPreview(base64String);
+        localStorage.setItem("savedSignature", base64String);
+        localStorage.setItem("savedSignatureName", file.name);
+      };
+      reader.readAsDataURL(file);
+
+      // Clear input value to allow re-uploading the same file
       e.target.value = '';
     }
   };
 
   const handleView = () => {
-    if (uploadedFile) {
-      const url = URL.createObjectURL(uploadedFile);
-      window.open(url, '_blank');
+    if (preview) {
+      const newTab = window.open();
+      newTab?.document.write(`<img src="${preview}" style="width:100%">`);
     }
   };
 
