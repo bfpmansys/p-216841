@@ -1,5 +1,4 @@
-// wag pansinin tong inbox, may error talaga kasi walang ma-fetch na data from supabase kasi wala pa tayong data sa database
-// pero pag may data na, magiging functional na to  :D
+
 import { ChatMessage } from "@/components/chat/chatMessage";
 import { ConversationList } from "@/components/chat/conversationList";
 import { Conversation, Message } from "@/types/chat";
@@ -7,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState, useRef } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { DashboardNavbar } from "@/components/dashboard/DashboardNavbar";
 
 const Inbox = () => {
@@ -37,16 +36,22 @@ const Inbox = () => {
           .select(`
             *,
             participants:conversation_participants(user_id, created_at),
-            last_message:messages!messages_conversation_id_fkey(*)
+            messages!messages_conversation_id_fkey(
+              id,
+              content,
+              sender_id,
+              created_at,
+              status
+            )
           `)
-          .order("last_message_at", { ascending: false });
+          .order('last_message_at', { ascending: false });
 
         if (error) throw error;
 
         const formattedData = data?.map((conv) => ({
           ...conv,
-          last_message: Array.isArray(conv.last_message) && conv.last_message.length > 0
-            ? conv.last_message[conv.last_message.length - 1]
+          last_message: conv.messages && conv.messages.length > 0
+            ? conv.messages[conv.messages.length - 1]
             : undefined
         }));
 
@@ -54,9 +59,10 @@ const Inbox = () => {
         if (formattedData?.[0]) {
           setSelectedConversation(formattedData[0].id);
         }
-      } catch (error) {
+      } catch (error: any) {
         toast({
           title: "Error fetching conversations",
+          description: error.message,
           variant: "destructive",
         });
       } finally {
@@ -66,12 +72,11 @@ const Inbox = () => {
 
     fetchConversations();
 
-    // Subscribe to new messages
     const channel = supabase
-      .channel("messages")
+      .channel('messages')
       .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "messages" },
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'messages' },
         (payload: { new: Message }) => {
           if (payload.new.conversation_id === selectedConversation) {
             setMessages((prev) => [...prev, payload.new]);
@@ -98,9 +103,10 @@ const Inbox = () => {
 
         if (error) throw error;
         setMessages(data || []);
-      } catch (error) {
+      } catch (error: any) {
         toast({
           title: "Error fetching messages",
+          description: error.message,
           variant: "destructive",
         });
       }
@@ -115,16 +121,24 @@ const Inbox = () => {
 
     setSendingMessage(true);
     try {
-      const { error } = await supabase.from("messages").insert({
-        content: newMessage.trim(),
-        conversation_id: selectedConversation,
-      });
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("User not found");
+
+      const { error } = await supabase
+        .from("messages")
+        .insert({
+          content: newMessage.trim(),
+          conversation_id: selectedConversation,
+          sender_id: user.id,
+          status: 'sent'
+        });
 
       if (error) throw error;
       setNewMessage("");
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Error sending message",
+        description: error.message,
         variant: "destructive",
       });
     } finally {
