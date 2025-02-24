@@ -130,7 +130,7 @@ const progress = (limitedCount / maxFiles) * 100;
           />
         </div>
         <p className="text-sm mt-2">
-          {uploadedCount} files uploaded across {REQUIREMENTS.length} requirements
+          {uploadedCount} files uploaded across {REQUIREMENTS.length} fields requirements
         </p>
       </div>
 

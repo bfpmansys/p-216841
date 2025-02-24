@@ -22,7 +22,6 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { DashboardNavbar } from "@/components/dashboard/DashboardNavbar";
 
 interface ProfileData {
   id: string;
@@ -139,15 +138,15 @@ const EditProfile: FC = () => {
     if (!currentPassword || !newPassword) return;
 
     // Password strength validation
-    // const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    // if (!passwordRegex.test(newPassword)) {
-    //   toast({
-    //     title: "Invalid password",
-    //     description: "Password must be at least 8 characters long and contain uppercase, lowercase, number and special character",
-    //     variant: "destructive",
-    //   });
-    //   return;
-    // }
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(newPassword)) {
+      toast({
+        title: "Invalid password",
+        description: "Password must be at least 8 characters long and contain uppercase, lowercase, number and special character",
+        variant: "destructive",
+      });
+      return;
+    }
 
     setIsLoading(true);
     try {
@@ -236,26 +235,20 @@ const EditProfile: FC = () => {
     </div>
   );
 
-  
-
   return (
-    <div className="min-h-screen bg-white font-['Poppins']">
-      {/* Dashboard Navbar */}
-      <DashboardNavbar />
-      <div className="max-w-[1440px] bg-white mx-auto my-0">
-      <div className="px-10 py-5 max-sm:px-2.5 max-sm:py-2.5">
-      <div className="flex items-center bg-[#FE623F] p-5 rounded-[16px_16px_0_0]">
+    <div className="min-h-screen bg-[#FFF5F2]">
+      <div className="bg-[#FF6347] px-6 py-4">
         <button
           onClick={() => navigate('/dashboard')}
           className="text-white flex items-center gap-2 mb-2"
         >
           <ChevronLeft size={20} />
-          <span></span>
+          <span>Back</span>
         </button>
         <h1 className="text-white text-xl font-semibold">VIEW PROFILE</h1>
       </div>
 
-      <div className="container mx-auto p-6 bg-[#FFECDB]">
+      <div className="container mx-auto p-6">
         <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-sm p-6">
           <div className="flex flex-col items-center mb-8">
             <div className="relative">
@@ -334,7 +327,6 @@ const EditProfile: FC = () => {
                 value={profileData.birthday}
                 onChange={(e) => setProfileData({ ...profileData, birthday: e.target.value })}
                 disabled={!isEditing}
-                max={new Date().toISOString().split("T")[0]}  // Set max to today's date
               />
             </div>
 
@@ -369,18 +361,12 @@ const EditProfile: FC = () => {
           <div className="flex justify-end gap-4 mt-8">
             {!isEditing ? (
               <>
-                <Button
-                  onClick={() => setIsEditing(true)}
-                  className="bg-[#FE623F] text-white px-4 py-2 rounded-[15px] hover:bg-[#FE795C] transition duration-300"
-                >
+                <Button onClick={() => setIsEditing(true)}>
                   Edit Profile
                 </Button>
                 <Dialog open={isPasswordDialogOpen} onOpenChange={setIsPasswordDialogOpen}>
                   <DialogTrigger asChild>
-                    <Button 
-                      variant="outline" 
-                      className="border-[#000] text-[#white] px-4 py-2 rounded-[15px] hover:bg-[#FE795C] hover:text-white transition duration-300"
-                    >
+                    <Button variant="outline">
                       <KeyRound className="w-4 h-4 mr-2" />
                       Change Password
                     </Button>
@@ -414,22 +400,18 @@ const EditProfile: FC = () => {
                       </div>
                     </div>
                     <div className="flex justify-end gap-4">
-                    <Button
-                      variant="outline"
-                      onClick={() => setIsPasswordDialogOpen(false)}
-                      className="border-[#FE623F] text-[#FE623F] px-4 py-2 rounded-[15px] hover:bg-[#FE795C] hover:text-white transition duration-300"
-                    >
-                      Cancel
-                    </Button>
-
-                    <Button
-                      onClick={handleChangePassword}
-                      disabled={!currentPassword || !newPassword || isLoading}
-                      className={`bg-[#FE623F] text-white px-4 py-2 rounded-[15px] hover:bg-[#FE795C] transition duration-300 ${isLoading || !currentPassword || !newPassword ? 'cursor-not-allowed opacity-50' : ''}`}
-                    >
-                      {isLoading ? "Saving..." : "Save Password"}
-                    </Button>
-
+                      <Button
+                        variant="outline"
+                        onClick={() => setIsPasswordDialogOpen(false)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={handleChangePassword}
+                        disabled={!currentPassword || !newPassword || isLoading}
+                      >
+                        {isLoading ? "Saving..." : "Save Password"}
+                      </Button>
                     </div>
                   </DialogContent>
                 </Dialog>
@@ -442,16 +424,13 @@ const EditProfile: FC = () => {
                     setIsEditing(false);
                     loadProfileData();
                   }}
-                  className="border-[#FE623F] text-[#FE623F] px-4 py-2 rounded-[15px] hover:bg-[#FE795C] hover:text-white transition duration-300"
                 >
                   <X className="w-4 h-4 mr-2" />
                   Cancel
                 </Button>
-
                 <Button
                   onClick={handleUpdateProfile}
                   disabled={isLoading}
-                  className={`bg-[#FE623F] text-white px-4 py-2 rounded-[15px] hover:bg-[#FE795C] transition duration-300 ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`}
                 >
                   <Save className="w-4 h-4 mr-2" />
                   {isLoading ? "Saving..." : "Save Changes"}
@@ -461,8 +440,6 @@ const EditProfile: FC = () => {
           </div>
         </div>
       </div>
-    </div>
-    </div>
     </div>
   );
 };
