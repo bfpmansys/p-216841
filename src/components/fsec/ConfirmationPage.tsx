@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { FSECFormData } from './types';
 import { FormSection } from './FormSection';
@@ -46,13 +47,6 @@ export const ConfirmationPage: React.FC<ConfirmationPageProps> = ({
       const { data, error: applicationError } = await supabase
         .from('applications')
         .insert({
-          establishment_name: formData.establishmentName,
-          owner_name: formData.ownerName,
-          representative_name: formData.representativeName,
-          trade_name: formData.tradeName,
-          occupancy_type: formData.occupancyType,
-          number_of_storeys: parseInt(formData.storeyCount),
-          total_floor_area: parseFloat(formData.floorArea),
           building_name: formData.address,
           region: formData.region,
           province: formData.province,
@@ -60,6 +54,13 @@ export const ConfirmationPage: React.FC<ConfirmationPageProps> = ({
           barangay: formData.barangay,
           landline: formData.landline,
           contact_number: formData.contactNumber,
+          establishment_name: formData.establishmentName,
+          owner_name: formData.ownerName,
+          representative_name: formData.representativeName,
+          trade_name: formData.tradeName,
+          occupancy_type: formData.occupancyType,
+          total_floor_area: formData.floorArea,
+          number_of_storeys: formData.storeyCount,
           signature: signatureFilePath,
         })
         .select('id')
@@ -97,6 +98,7 @@ export const ConfirmationPage: React.FC<ConfirmationPageProps> = ({
                   requirement_type: type,
                   file_url: fileData.path,
                   file_name: file.name,
+                  uploaded_at: new Date().toISOString(),
                 });
 
               if (requirementError) {
