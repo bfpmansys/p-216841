@@ -16,6 +16,9 @@ import RequirementsUpload from "./pages/RequirementsUpload";
 import ApplicationSummary from "./pages/ApplicationSummary";
 import { QuickLinks } from "./components/dashboard/QuickLinks";
 import Inbox from "./pages/Inbox";
+import Establishments from "./pages/Establishments";
+import Compliance from "./pages/Compliance";
+import Inspection from "./pages/Inspection";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +40,9 @@ const App = () => (
           <Route path="/dashboard/apply/:type/summary" element={<ApplicationSummary />} />
           <Route path="/inbox" element={<Inbox />} />
           <Route path="/quick-links" element={<QuickLinks />} /> 
+          <Route path="/establishments" element={<Establishments />} />
+          <Route path="/compliance" element={<Compliance />} />
+          <Route path="/inspection" element={<Inspection />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

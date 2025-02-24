@@ -34,23 +34,26 @@ const Dashboard: FC = () => {
             <hr className="border mx-0 my-[42px] border-solid border-black" />
             <div className="flex mt-[17px] px-8 py-0 max-md:flex-col max-md:px-5 max-md:py-0">
               <QuickLinks />
+              
               <div className="w-9/12 pl-10 max-md:w-full">
-                <h2 className="text-xl font-bold mb-4">
-                  ESTABLISHMENT INFORMATION
-                </h2>
-                
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="font-semibold text-lg"></h2>
+                <div className="flex justify-between items-center px- py-0 flex-wrap gap-4 max-md:flex-col max-md:px-5">
+                  <h2 className="text-xl font-bold">ESTABLISHMENT INFORMATION</h2>
                   <button 
                     onClick={() => setIsApplicationModalOpen(true)}
-                    className="bg-[#FF6347] flex gap-3 text-white px-4 py-2 rounded-lg text-sm hover:bg-[#FF6347]/90 transition-colors"
+                    className="bg-[#FF6347] flex items-center gap-3 text-white px-4 py-2 rounded-lg text-sm hover:bg-[#FF6347]/90 transition-colors"
                   >
                     <img
                       src="/images/icons/addIcon.png"
                       alt="Add Icon"
-                      className="aspect-[1] object-contain w-5"
-                    />APPLY NEW ESTABLISHMENT
+                      className="w-5 h-5 object-contain"
+                    />
+                    APPLY ESTABLISHMENT
                   </button>
+                </div>
+
+                
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="font-semibold text-lg"></h2>
                 </div>
                 <EstablishmentCard
                   status="ACTIVE"

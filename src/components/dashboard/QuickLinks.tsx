@@ -1,6 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
+
+
 interface QuickLinkItemProps {
   icon: string;
   title: string;
@@ -32,15 +34,15 @@ export const QuickLinks = () => {
     <section className="mr-16">
       <h2 className="text-xl font-bold mb-8">QUICK LINKS</h2>
       <div className="flex flex-col gap-6">
-        <QuickLinkItem 
+        {/* <QuickLinkItem
           icon="images/icons/applicationIcon.png"
           title="APPLICATION"
-          path="/application"
-        />
+          path="/establishments"
+        /> */}
         <QuickLinkItem 
           icon="images/icons/establishmentIcon.png"
           title="ESTABLISHMENT"
-          path="/establishment"
+          path="/establishments"
         />
         <QuickLinkItem 
           icon="images/icons/inboxIcon.png"

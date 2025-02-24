@@ -203,7 +203,22 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_inspections_with_details: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          fsic_no: string
+          date_of_inspection: string
+          attending_inspector: string
+          valid_until: string
+          status: string
+          created_at: string
+          application_id: string
+          establishment_name: string
+          application_type: string
+        }[]
+      }
+    }
     }
     Enums: {
       [_ in never]: never

@@ -46,7 +46,7 @@ export const DashboardNavbar: FC = () => {
         <DropdownMenuContent align="end" className="w-48 mt-2 shadow-lg">
           <DropdownMenuItem onClick={() => navigate("/dashboard/profile")}>
             <Settings className="w-4 h-4 mr-2" />
-            Edit Profile
+            Profile
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleLogout} disabled={isLoading}>
             <LogOut className="w-4 h-4 mr-2" />
