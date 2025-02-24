@@ -12,26 +12,26 @@ export type Database = {
       application_requirements: {
         Row: {
           application_id: string | null
-          file_name: string
-          file_url: string
+          file_name: string | null
+          file_url: string | null
           id: string
-          requirement_type: string
+          requirement_type: string | null
           uploaded_at: string | null
         }
         Insert: {
           application_id?: string | null
-          file_name: string
-          file_url: string
-          id?: string
-          requirement_type: string
+          file_name?: string | null
+          file_url?: string | null
+          id: string
+          requirement_type?: string | null
           uploaded_at?: string | null
         }
         Update: {
           application_id?: string | null
-          file_name?: string
-          file_url?: string
+          file_name?: string | null
+          file_url?: string | null
           id?: string
-          requirement_type?: string
+          requirement_type?: string | null
           uploaded_at?: string | null
         }
         Relationships: [
@@ -46,78 +46,75 @@ export type Database = {
       }
       applications: {
         Row: {
-          application_type: string
-          barangay: string
+          application_type: string | null
+          barangay: string | null
           building_name: string | null
-          city: string
+          city: string | null
           contact_number: string | null
           created_at: string | null
-          establishment_name: string
+          establishment_name: string | null
           id: string
           landline: string | null
-          number_of_storeys: number
-          occupancy_type: string
+          number_of_storeys: string | null
+          occupancy_type: string | null
           owner_id: string | null
-          owner_name: string
-          province: string
-          region: string
+          owner_name: string | null
+          province: string | null
+          region: string | null
           representative_name: string | null
+          signature: string | null
           signature_url: string | null
-          status: string
-          street_name: string | null
-          total_floor_area: number
+          status: string | null
+          total_floor_area: string | null
           trade_name: string | null
-          unit_no: string | null
           updated_at: string | null
         }
         Insert: {
-          application_type: string
-          barangay: string
+          application_type?: string | null
+          barangay?: string | null
           building_name?: string | null
-          city?: string
+          city?: string | null
           contact_number?: string | null
           created_at?: string | null
-          establishment_name: string
+          establishment_name?: string | null
           id?: string
           landline?: string | null
-          number_of_storeys: number
-          occupancy_type: string
+          number_of_storeys?: string | null
+          occupancy_type?: string | null
           owner_id?: string | null
-          owner_name: string
-          province?: string
-          region?: string
+          owner_name?: string | null
+          province?: string | null
+          region?: string | null
           representative_name?: string | null
+          signature?: string | null
           signature_url?: string | null
-          status?: string
-          street_name?: string | null
-          total_floor_area: number
+          status?: string | null
+          total_floor_area?: string | null
           trade_name?: string | null
-          unit_no?: string | null
           updated_at?: string | null
         }
         Update: {
-          application_type?: string
-          barangay?: string
+          application_type?: string | null
+          barangay?: string | null
           building_name?: string | null
-          city?: string
+          city?: string | null
           contact_number?: string | null
           created_at?: string | null
-          establishment_name?: string
+          establishment_name?: string | null
           id?: string
           landline?: string | null
-          number_of_storeys?: number
-          occupancy_type?: string
+          number_of_storeys?: string | null
+          occupancy_type?: string | null
           owner_id?: string | null
-          owner_name?: string
-          province?: string
-          region?: string
+          owner_name?: string | null
+          province?: string | null
+          region?: string | null
           representative_name?: string | null
+          signature?: string | null
           signature_url?: string | null
-          status?: string
-          street_name?: string | null
-          total_floor_area?: number
+          status?: string | null
+          total_floor_area?: string | null
           trade_name?: string | null
-          unit_no?: string | null
           updated_at?: string | null
         }
         Relationships: [
@@ -168,6 +165,53 @@ export type Database = {
           },
         ]
       }
+      inspections: {
+        Row: {
+          application_id: string | null
+          application_type: string
+          attending_inspector: string
+          created_at: string | null
+          date_of_inspection: string
+          establishment_name: string
+          fsic_no: string
+          id: string
+          status: string
+          valid_until: string
+        }
+        Insert: {
+          application_id?: string | null
+          application_type: string
+          attending_inspector: string
+          created_at?: string | null
+          date_of_inspection: string
+          establishment_name: string
+          fsic_no: string
+          id?: string
+          status?: string
+          valid_until: string
+        }
+        Update: {
+          application_id?: string | null
+          application_type?: string
+          attending_inspector?: string
+          created_at?: string | null
+          date_of_inspection?: string
+          establishment_name?: string
+          fsic_no?: string
+          id?: string
+          status?: string
+          valid_until?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inspections_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           birthday: string
@@ -176,6 +220,7 @@ export type Database = {
           id: string
           last_name: string
           middle_name: string | null
+          signature: string | null
           updated_at: string
         }
         Insert: {
@@ -185,6 +230,7 @@ export type Database = {
           id: string
           last_name: string
           middle_name?: string | null
+          signature?: string | null
           updated_at?: string
         }
         Update: {
@@ -194,6 +240,7 @@ export type Database = {
           id?: string
           last_name?: string
           middle_name?: string | null
+          signature?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -218,7 +265,6 @@ export type Database = {
           application_type: string
         }[]
       }
-    }
     }
     Enums: {
       [_ in never]: never
