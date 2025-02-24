@@ -64,9 +64,15 @@ const Profile: FC = () => {
       if (profileError) throw profileError;
 
       setProfileData({
-        ...profile,
         id: user.id,
         email: user.email || '',
+        first_name: profile.first_name,
+        middle_name: profile.middle_name,
+        last_name: profile.last_name,
+        birthday: profile.birthday,
+        gender: profile.gender || null,
+        contact_number: profile.contact_number || null,
+        avatar_url: profile.avatar_url || null,
       });
     } catch (error: any) {
       toast({
@@ -91,6 +97,7 @@ const Profile: FC = () => {
           birthday: profileData.birthday,
           gender: profileData.gender,
           contact_number: profileData.contact_number,
+          avatar_url: profileData.avatar_url,
         })
         .eq('id', profileData.id);
 
