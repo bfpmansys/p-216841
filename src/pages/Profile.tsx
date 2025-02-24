@@ -53,7 +53,10 @@ const Profile: FC = () => {
   const loadProfileData = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("User not found");
+      if (!user) {
+        navigate('/login');
+        return;
+      }
 
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
@@ -63,6 +66,16 @@ const Profile: FC = () => {
 
       if (profileError) throw profileError;
 
+      // Ensure profile exists
+      if (!profile) {
+        toast({
+          title: "Profile not found",
+          description: "Please complete your profile setup",
+          variant: "destructive",
+        });
+        return;
+      }
+
       setProfileData({
         id: user.id,
         email: user.email || '',
@@ -70,11 +83,12 @@ const Profile: FC = () => {
         middle_name: profile.middle_name,
         last_name: profile.last_name,
         birthday: profile.birthday,
-        gender: profile.gender || null,
-        contact_number: profile.contact_number || null,
-        avatar_url: profile.avatar_url || null,
+        gender: profile.gender,
+        contact_number: profile.contact_number,
+        avatar_url: profile.avatar_url,
       });
     } catch (error: any) {
+      console.error("Error loading profile:", error);
       toast({
         title: "Error loading profile",
         description: error.message,
@@ -108,7 +122,9 @@ const Profile: FC = () => {
         description: "Your profile has been updated successfully.",
       });
       setIsEditing(false);
+      await loadProfileData(); // Reload profile data to ensure we have the latest
     } catch (error: any) {
+      console.error("Error updating profile:", error);
       toast({
         title: "Error",
         description: error.message,
@@ -149,6 +165,7 @@ const Profile: FC = () => {
       setCurrentPassword("");
       setNewPassword("");
     } catch (error: any) {
+      console.error("Error changing password:", error);
       toast({
         title: "Error",
         description: error.message,
@@ -167,6 +184,17 @@ const Profile: FC = () => {
       const fileExt = file.name.split('.').pop();
       const filePath = `${profileData.id}/${crypto.randomUUID()}.${fileExt}`;
 
+      // Delete old avatar if it exists
+      if (profileData.avatar_url) {
+        const oldFilePath = profileData.avatar_url.split('/').pop();
+        if (oldFilePath) {
+          await supabase.storage
+            .from('avatars')
+            .remove([`${profileData.id}/${oldFilePath}`]);
+        }
+      }
+
+      // Upload new avatar
       const { error: uploadError } = await supabase.storage
         .from('avatars')
         .upload(filePath, file);
@@ -190,6 +218,7 @@ const Profile: FC = () => {
         description: "Your profile picture has been updated successfully.",
       });
     } catch (error: any) {
+      console.error("Error uploading avatar:", error);
       toast({
         title: "Error",
         description: error.message,
@@ -198,7 +227,14 @@ const Profile: FC = () => {
     }
   };
 
-  if (!profileData) return null;
+  if (!profileData) return (
+    <div className="min-h-screen bg-[#FFF5F2] flex items-center justify-center">
+      <div className="text-center">
+        <h2 className="text-xl font-semibold mb-2">Loading profile...</h2>
+        <p className="text-gray-600">Please wait while we fetch your information.</p>
+      </div>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-[#FFF5F2]">
