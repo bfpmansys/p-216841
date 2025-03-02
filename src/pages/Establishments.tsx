@@ -12,10 +12,10 @@ const Establishments: FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const { data: establishments, isLoading: establishmentsLoading } = useQuery({
-    queryKey: ['establishments'],
+    queryKey: ['applications'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('establishments')
+        .from('applications')
         .select('*')
         .order('created_at', { ascending: false });
       
@@ -94,7 +94,7 @@ const Establishments: FC = () => {
                 <table className="min-w-full">
                   <thead>
                     <tr className="border-b">
-                      <th className="py-3 px-4 text-left">Application Number</th>
+                      {/* <th className="py-3 px-4 text-left">Application Number</th>  */}
                       <th className="py-3 px-4 text-left">Establishment Name</th>
                       <th className="py-3 px-4 text-left">Application Type</th>
                       <th className="py-3 px-4 text-left">Date Of Application</th>
@@ -113,9 +113,9 @@ const Establishments: FC = () => {
                     ) : (
                       establishments?.map((establishment) => (
                         <tr key={establishment.id} className="border-b hover:bg-gray-50">
-                          <td className="py-3 px-4">{establishment.business_name}</td>
-                          <td className="py-3 px-4">{establishment.business_type}</td>
-                          <td className="py-3 px-4">{establishment.business_address}</td>
+                          <td className="py-3 px-4">{establishment.establishment_name}</td>
+                          <td className="py-3 px-4">{establishment.application_type}</td>
+                          <td className="py-3 px-4">{new Date(establishment.created_at).toLocaleDateString()}</td>
                           <td className="py-3 px-4">
                             <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-sm">
                               Active

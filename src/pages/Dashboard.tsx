@@ -56,19 +56,19 @@ const Dashboard: FC = () => {
                   <h2 className="font-semibold text-lg"></h2>
                 </div>
                 <EstablishmentCard
-                  status="ACTIVE"
+                  status="UNREGISTERED"
                   name="Dizon Enterprises"
                   type="FIRE SAFETY EVALUATION CLEARANCE (FSEC)"
                   state="FOR COMPLIANCE"
                 />
                 <EstablishmentCard
-                  status="INACTIVE"
+                  status="UNREGISTERED"
                   name="Javier Enterprises"
                   type="FSIC FOR CERTIFICATE OF OCCUPANCY"
                   state="REJECTED"
                 />
                 <EstablishmentCard
-                  status="ACTIVE"
+                  status="REGISTERED"
                   name="Javier Enterprises"
                   type="FSIC FOR BUSINESS PERMIT"
                   state="FOR INSPECTION"
