@@ -15,7 +15,7 @@ export const LoginForm: FC = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent, role?: string) => {
     e.preventDefault();
     setIsLoading(true);
 
@@ -28,11 +28,21 @@ export const LoginForm: FC = () => {
       if (error) throw error;
 
       if (data.user) {
+        // If a specific role button was clicked, redirect to that role's dashboard
+        let redirectPath = "/dashboard";
+        
+        if (role === "inspector") {
+          redirectPath = "/inspector-dashboard";
+        } else if (role === "admin") {
+          redirectPath = "/admin-dashboard";
+        }
+
         toast({
           title: "Login successful",
-          description: "Welcome back!",
+          description: `Welcome back${role ? ` as ${role}` : ''}!`,
         });
-        navigate("/dashboard"); // Redirect to dashboard after successful login
+        
+        navigate(redirectPath);
       }
     } catch (error: any) {
       toast({
@@ -91,7 +101,7 @@ return (
       <h1 className="text-4xl font-bold text-[#FF0000]">LOG IN</h1>
     </div>
 
-    <form onSubmit={handleLogin} className="space-y-6">
+    <form className="space-y-6">
       {/* Email Input Field */}
       <div className="space-y-2">
         <Label htmlFor="email">E-mail:</Label>
@@ -147,17 +157,39 @@ return (
         </button>
       </div>
 
-      <div className="flex justify-center">
-        <button
-          type="submit"
-          className="w-[150px] bg-[#FE623F] text-white py-2 rounded-2xl hover:bg-[#FE623F]/90 transition-colors disabled:opacity-50 font-bold font-['Poppins']"
-          disabled={isLoading}
-        >
-          {isLoading ? "Loading..." : "LOG IN"}
-        </button>
+      {/* Role-specific Login Buttons */}
+      <div className="space-y-3">
+        <div className="flex justify-center">
+          <button
+            type="button"
+            onClick={(e) => handleLogin(e)}
+            className="w-[150px] bg-[#FE623F] text-white py-2 rounded-2xl hover:bg-[#FE623F]/90 transition-colors disabled:opacity-50 font-bold font-['Poppins']"
+            disabled={isLoading}
+          >
+            {isLoading ? "Loading..." : "LOG IN"}
+          </button>
+        </div>
+        
+        <div className="flex justify-between px-4">
+          <button
+            type="button"
+            onClick={(e) => handleLogin(e, "inspector")}
+            className="bg-[#ffffff] text-black py-2 px-4 rounded-xl hover:bg-[#3F83FE]/90 transition-colors disabled:opacity-50 font-bold font-['Poppins'] text-sm"
+            disabled={isLoading}
+          >
+            Inspector Login
+          </button>
+          
+          <button
+            type="button"
+            onClick={(e) => handleLogin(e, "admin")}
+            className="bg-[#ffffff] text-black py-2 px-4 rounded-xl hover:bg-[#4CAF50]/90 transition-colors disabled:opacity-50 font-bold font-['Poppins'] text-sm"
+            disabled={isLoading}
+          >
+            Admin Login
+          </button>
+        </div>
       </div>
-
-
 
       <div className="text-center text-sm italic">
         <span className="">No Account Yet? </span>

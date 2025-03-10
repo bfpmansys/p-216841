@@ -1,5 +1,5 @@
-import { FC, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { FC, useState, useEffect } from "react";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ChevronLeft } from "lucide-react";
@@ -14,10 +14,9 @@ import { ConfirmationPage } from "@/components/fsec/ConfirmationPage";
 import { FSECFormData } from "@/components/fsec/types";
 import { useToast } from "@/hooks/use-toast";
 
-
-
 import { DashboardNavbar } from "@/components/dashboard/DashboardNavbar";
-import ApplicationSummary  from "@/components/fsec/ApplicationSummary";
+import ApplicationSummary from "@/components/fsec/ApplicationSummary";
+import React from "react";
 
 const VALENZUELA_BARANGAYS = [
   "Arkong Bato",
@@ -56,11 +55,56 @@ const VALENZUELA_BARANGAYS = [
 // Get today's date in YYYY-MM-DD format
 const today = new Date().toISOString().split("T")[0];
 const dummyImage = new File([""], "dummy.jpg", { type: "image/jpeg" });
-const ApplicationForm = () => {
+
+const ApplicationForm: React.FC = () => {
+  // Get the application type from URL parameters
+  const [searchParams] = useSearchParams();
+  const title = searchParams.get("title") || "Application Form";
+  const establishmentName = searchParams.get("name") || "";
+  const dtiNumber = searchParams.get("dtiNumber") || "";
+  const applicationType = searchParams.get("type") || "clearance"; // Default to clearance if no type specified
+  const skipUpload = searchParams.get("skipUpload") === "true"; // New parameter to skip document upload
+  
   const [currentStep, setCurrentStep] = useState(1);
+  
+  // Properly define handlePrevious
+  const handlePrevious = () => {
+    if (currentStep === 3 && skipUpload) {
+      // Skip the upload documents step and go directly to step 1
+      setCurrentStep(1);
+    } else {
+      // Normal previous behavior
+      setCurrentStep(currentStep - 1);
+    }
+  };
+  
+  // Customize title based on application type
+  const getFormTitle = () => {
+    switch(applicationType) {
+      case "occupancy":
+        return "FIRE SAFETY INSPECTION CERTIFICATE (FSIC FOR OCCUPANCY PERMIT)";
+      case "business":
+        return "FIRE SAFETY INSPECTION CERTIFICATE (FSIC FOR BUSINESS PERMIT)";
+      case "clearance":
+        return "FIRE SAFETY EVALUATION CLEARANCE (FSEC)";
+      case "others":
+        return "OTHER FIRE SAFETY CERTIFICATES";
+      case "new":
+        return title || "REGISTER ESTABLISHMENT";
+      default:
+        return "REGISTER ESTABLISHMENT";
+    }
+  };
+
+  // Get form subtitle
+  const getFormSubtitle = () => {
+    return `APPLICATION FORM : ${getFormTitle()}`;
+  };
+
   const { toast } = useToast();
   const [formData, setFormData] = useState<FSECFormData>({
-    establishmentName: "",
+    applicationType: applicationType,
+    establishmentName: establishmentName, // Initialize with URL parameter
     ownerName: "",
     representativeName: "",
     tradeName: "",
@@ -77,10 +121,9 @@ const ApplicationForm = () => {
     contactNumber: "",
     signature: dummyImage,
     date: today,
-    
+    dtiNumber: dtiNumber, // Initialize dtiNumber with URL parameter
     uploadedFiles: {},
   });
-
   
   const handleInputChange = (field: keyof FSECFormData) => 
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -111,7 +154,6 @@ const ApplicationForm = () => {
 
   const [signature, setSignature] = useState<File | null>(null);
 
-
   const handleSignatureUpload = (file: File) => {
     setSignature(file);
     setFormData((prev) => ({
@@ -121,7 +163,6 @@ const ApplicationForm = () => {
     console.log("Uploaded Signature:", file); // Debugging log
   };
   
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
   
@@ -162,8 +203,6 @@ const ApplicationForm = () => {
       return;
     }
     
-    
-  
     // Validate file size (max 5MB)
     if (formData.signature.size > 5 * 1024 * 1024) {
       toast({
@@ -175,11 +214,15 @@ const ApplicationForm = () => {
     }
   
     // If validation passes, proceed to next step
-    setCurrentStep(2);
+    // Skip document upload step if skipUpload is true
+    if (skipUpload) {
+      setCurrentStep(3); // Skip to confirmation page (step 3)
+    } else {
+      setCurrentStep(2); // Go to document upload page (step 2)
+    }
     window.scrollTo(0, 0);
   };
   
-
   // Compute full address for map
   const fullAddress = `${formData.address}, ${formData.barangay}, ${formData.city}, Philippines`;
 
@@ -198,6 +241,15 @@ const ApplicationForm = () => {
                 value={formData.establishmentName}
                 onChange={handleInputChange("establishmentName")}
               />
+              
+              {/* Always show DTI Number field, disabled if it was passed via URL */}
+              <InputField
+                label="DTI Registration Number"
+                value={formData.dtiNumber || ""}
+                onChange={handleInputChange("dtiNumber")}
+                disabled={!!dtiNumber} // Disable if dtiNumber was provided via URL
+              />
+              
               <div className="flex gap-5 max-md:flex-col max-md:gap-2.5">
                 <InputField
                   label="Name of Owner"
@@ -241,7 +293,6 @@ const ApplicationForm = () => {
                   value={formData.storeyCount.toString()} // Convert to string
                   onChange={handleInputChange("storeyCount")}
                 />
-
               </div>
             </FormSection>
 
@@ -336,7 +387,6 @@ const ApplicationForm = () => {
 
               <FormSection title="ADDITIONAL DETAILS" className="flex-1">
                 <SignatureUpload onFileSelected={handleSignatureUpload} />
-                {/* <SignatureUpload onUpload={handleSignatureUpload} /> */}
 
                 <div className="mt-5">
                 <InputField disabled
@@ -366,6 +416,7 @@ const ApplicationForm = () => {
             formData={formData}
             setFormData={setFormData}
             setCurrentStep={setCurrentStep}
+            onPrevious={handlePrevious} // Pass the handlePrevious function
           />
         );
       case 3:
@@ -373,24 +424,29 @@ const ApplicationForm = () => {
           <ConfirmationPage
             formData={formData}
             setCurrentStep={setCurrentStep}
+            onPrevious={handlePrevious} // Pass the handlePrevious function
           />
         );
-        case 4:
-          return (
-            <ApplicationSummary
-              formData={formData}
-              setFormData={setFormData}
-              setCurrentStep={setCurrentStep}
-            />
-          );
-        
+      case 4:
+        return (
+          <ApplicationSummary
+            formData={formData}
+            setFormData={setFormData}
+            setCurrentStep={setCurrentStep}
+            onPrevious={handlePrevious} // Pass the handlePrevious function
+          />
+        );
       default:
         return null;
     }
   };
 
-
   const navigate = useNavigate();
+  
+  // Update the progress bar to reflect skipping a step
+  const getProgressStepCount = () => {
+    return skipUpload ? 3 : 4; // Total number of steps (3 if skipping upload, 4 otherwise)
+  };
   
   return (
     <div className="min-h-screen bg-white font-['Poppins']">
@@ -407,16 +463,20 @@ const ApplicationForm = () => {
           </button>
 
             <h1 className="text-white text-2xl font-bold max-sm:text-xl mx-auto text-center ">
-              FIRE SAFETY EVALUATION CLEARANCE
+              {getFormTitle()}
             </h1>
           </div>
 
           <div className="bg-[#FFECDB] p-5 max-md:p-[15px]">
             <h2 className="text-base font-bold mb-5">
-              APPLICATION FORM : FIRE SAFETY EVALUATION CLEARANCE (FSEC)
+              {getFormSubtitle()}
             </h2>
 
-            <ProgressBar currentStep={currentStep} />
+            {/* Pass totalSteps prop to ProgressBar based on whether we're skipping upload */}
+            <ProgressBar 
+              currentStep={currentStep} 
+              totalSteps={getProgressStepCount()}
+            />
 
             {renderStep()}
           </div>
@@ -424,7 +484,6 @@ const ApplicationForm = () => {
       </div>
     </div>
   );
-  
 };
 
 export default ApplicationForm;

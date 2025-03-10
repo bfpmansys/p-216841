@@ -19,7 +19,17 @@ import Inbox from "./pages/Inbox";
 import Establishments from "./pages/Establishments";
 import Compliance from "./pages/Compliance";
 import Inspection from "./pages/Inspection";
-
+import { EstablishmentList } from "./components/dashboard/EstablishmentList";
+import { EstablishmentCard } from "./components/dashboard/EstablishmentCard";
+import AdminDashboard from "./pages/AdminDashboard";
+import InspectorDashboard from "./pages/InspectorDashboard";
+import Reports from "./pages/admin/Reports";
+import Inspections from "./pages/admin/Inspections";
+import AdminEstablishments from "./pages/admin/AdminEstablishments";
+import { Settings } from "lucide-react";
+import AdminApplications from "./pages/admin/AdminApplications";
+import AdminCalendar from "./pages/admin/AdCalendar";
+import InsCalendar from "./pages/admin/inspector/InsCalendar";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -43,6 +53,27 @@ const App = () => (
           <Route path="/establishments" element={<Establishments />} />
           <Route path="/compliance" element={<Compliance />} />
           <Route path="/inspection" element={<Inspection />} />
+          <Route path="/ApplicationForm" element={<ApplicationForm />} />
+          <Route path="/inspector-dashboard" element={<InspectorDashboard />} />
+
+          
+          <Route path="/dashboard/EstablishmentList" element={<EstablishmentList />} />
+          <Route path="/dashboard/EstablishmentCard" element={<EstablishmentCard name={""} status={"REGISTERED"} dtiNumber={""} />} />
+          <Route path="/inspection" element={<Inspection />} />
+
+
+          {/* admin */}
+          <Route path="/admin-dashboard" element={<AdminDashboard />} />
+          <Route path="/admin-users" element={<Reports />} />
+          <Route path="/admin-establishments" element={<AdminEstablishments />} />
+          <Route path="/admin-applications" element={<AdminApplications />} />
+          <Route path="/admin-inspections" element={<Inspections />} />
+          <Route path="/admin-calendar" element={<AdminCalendar />} />
+          <Route path="/admin-messages" element={<Reports />} />
+
+          
+          <Route path="/ins-calendar" element={<InsCalendar />} />
+          
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

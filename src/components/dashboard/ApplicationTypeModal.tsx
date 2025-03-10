@@ -1,4 +1,3 @@
-
 import { FC } from "react";
 import {
   Dialog,
@@ -6,8 +5,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Home, Building2, FileText, Building, Store } from "lucide-react";
+import { Home, Building2, FileText, Store } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+
 interface ApplicationTypeModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -47,7 +47,8 @@ export const ApplicationTypeModal: FC<ApplicationTypeModalProps> = ({
   ];
 
   const handleSelectType = (type: string) => {
-    navigate(`/dashboard/apply/${type}`);
+    // Navigate to the ApplicationForm with the application type as query parameter
+    navigate(`/application-form?type=${type}`);
     onClose();
   };
 
@@ -56,7 +57,7 @@ export const ApplicationTypeModal: FC<ApplicationTypeModalProps> = ({
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-center mb-4">
-            Select Application Type
+            SELECT APPLICATION TYPE
           </DialogTitle>
         </DialogHeader>
         
@@ -65,11 +66,11 @@ export const ApplicationTypeModal: FC<ApplicationTypeModalProps> = ({
             <button
               key={type.type}
               onClick={() => handleSelectType(type.type)}
-              className="flex flex-col items-center p-6 bg-[#FFF5F2] rounded-lg hover:bg-[#FFE5E0] transition-colors text-center group"
+              className="flex flex-col items-center p-6 bg-[#FFECDB] rounded-lg hover:bg-[#FFE5E0] transition-colors text-center group border border-gray-200"
             >
               <type.icon
                 size={40}
-                className="text-[#FF6347] mb-4 group-hover:scale-110 transition-transform"
+                className="text-[#FE623F] mb-4 group-hover:scale-110 transition-transform"
               />
               <h3 className="font-semibold text-lg mb-2">{type.title}</h3>
               <p className="text-sm text-gray-600">{type.description}</p>

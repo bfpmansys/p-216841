@@ -1,4 +1,3 @@
-
 import { FC, useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ChevronLeft, FileText, Check } from "lucide-react";
@@ -9,6 +8,7 @@ interface ApplicationSummaryProps {
   formData: FSECFormData;
   setFormData: React.Dispatch<React.SetStateAction<FSECFormData>>;
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
+  onPrevious?: () => void; // Added onPrevious prop
 }
 
 interface ApplicationSummary {
@@ -31,7 +31,12 @@ interface UploadedFile {
   type: string;
 }
 
-const ApplicationSummary: FC<ApplicationSummaryProps> = ({ formData, setFormData, setCurrentStep }) => {
+const ApplicationSummary: FC<ApplicationSummaryProps> = ({ 
+  formData, 
+  setFormData, 
+  setCurrentStep,
+  onPrevious 
+}) => {
   const { type } = useParams<{ type: string }>();
   const navigate = useNavigate();
   const [localFormData, setLocalFormData] = useState<ApplicationSummary | null>(null);
@@ -64,6 +69,15 @@ const ApplicationSummary: FC<ApplicationSummaryProps> = ({ formData, setFormData
     }
   };
 
+  // Handle previous button click with fallback
+  const handlePrevious = () => {
+    if (onPrevious) {
+      onPrevious(); // Use the provided onPrevious function
+    } else {
+      setCurrentStep(3); // Fallback to direct step change
+    }
+  };
+
   const handleSubmit = async () => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000)); 
@@ -83,7 +97,6 @@ const ApplicationSummary: FC<ApplicationSummaryProps> = ({ formData, setFormData
         description: "There was an error submitting your application. Please try again.",
         variant: "destructive",
       });
-      
     }
   };
 
@@ -95,7 +108,7 @@ const ApplicationSummary: FC<ApplicationSummaryProps> = ({ formData, setFormData
     <div className="min-h-screen bg-[#FFF5F2]">
       <div className="bg-[#FF6347] px-6 py-4">
         <button
-          onClick={() => navigate(`/dashboard/apply/${type}/requirements`)}
+          onClick={handlePrevious}
           className="text-white flex items-center gap-2 mb-2"
         >
           <ChevronLeft size={20} />

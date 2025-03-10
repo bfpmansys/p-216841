@@ -4,8 +4,10 @@ import { SearchBar } from "@/components/establishments/SearchBar";
 import { Establishment } from "@/types/establishment";
 import { InsSidebar } from "@/components/dashboard/InsSidebar";
 import { InsHeader } from "@/components/dashboard/InsHeader";
+import { AdminHeader } from "@/components/dashboard/AdminHeader";
+import { AdminSidebar } from "@/components/dashboard/AdminSidebar";
 
-const Establishments = () => {
+const AdminEstablishments = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const establishments: Establishment[] = [
@@ -51,21 +53,20 @@ const Establishments = () => {
   );
 
   return (
-    <div className="bg-white overflow-hidden">
-          <InsHeader />
-          <main className="flex w-full max-w-[1392px] mx-auto items-stretch gap-[40px_41px] flex-wrap max-md:max-w-full">
-            <InsSidebar />
-            <div className="bg-[rgba(255,236,219,1)] grow shrink-0 basis-0 w-fit my-auto pb-[115px] rounded-2xl max-md:max-w-full max-md:pb-[100px]">
-              <div className="bg-[rgba(254,98,63,1)] flex items-stretch gap-[40px_100px] text-2xl text-white font-bold whitespace-nowrap text-center flex-wrap pl-20 pr-[31px] py-[22px] rounded-[16px_16px_0px_0px] mt-10 max-md:max-w-full max-md:px-5">
-                <div>ASSIGNED ESTABLISHMENTS</div>
-              </div>
-              
+    <div className="min-h-screen bg-white">
+            <AdminHeader />
+            <AdminSidebar />
+            <main className="ml-[106px] p-10 max-md:p-5">
+            <div className="bg-[#fe623f] p-5 rounded-[16px_16px_0_0]">
+              <h1 className="text-white text-2xl font-bold max-sm:text-xl">ESTABLISHMENTS</h1>
+            </div>
+            <div className="shadow-[0_4px_4px_rgba(0,0,0,0.25)] bg-white mt-5 p-10 rounded-2xl">
               <SearchBar onSearch={setSearchQuery} />
               <EstablishmentsTable establishments={filteredEstablishments} />
             </div>
-          </main>
-        </div>
-      );
-};
+            </main>
+          </div>
+        );
+  };
 
-export default Establishments;
+export default AdminEstablishments;

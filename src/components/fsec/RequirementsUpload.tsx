@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { FSECFormData } from './types';
 import { useToast } from "@/hooks/use-toast";
@@ -56,12 +55,14 @@ interface RequirementsUploadProps {
   formData: FSECFormData;
   setFormData: React.Dispatch<React.SetStateAction<FSECFormData>>;
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
+  onPrevious?: () => void; // Add this prop
 }
 
 export const RequirementsUpload: React.FC<RequirementsUploadProps> = ({
   formData,
   setFormData,
-  setCurrentStep
+  setCurrentStep,
+  onPrevious
 }) => {
   const { toast } = useToast();
 
@@ -115,9 +116,17 @@ export const RequirementsUpload: React.FC<RequirementsUploadProps> = ({
 
   const uploadedCount = getUploadedFilesCount();
   const maxFiles = 9;
-const limitedCount = Math.min(uploadedCount, maxFiles);
-const progress = (limitedCount / maxFiles) * 100;
+  const limitedCount = Math.min(uploadedCount, maxFiles);
+  const progress = (limitedCount / maxFiles) * 100;
 
+  // Updated previous button handler
+  const handlePrevious = () => {
+    if (onPrevious) {
+      onPrevious(); // Use the provided onPrevious function
+    } else {
+      setCurrentStep(1); // Fallback to direct step change
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -194,35 +203,34 @@ const progress = (limitedCount / maxFiles) * 100;
 
       <div className="flex justify-between mt-6">
         <button
-          onClick={() => setCurrentStep(1)}
+          onClick={handlePrevious}
           className="px-6 py-2 text-[#FFF] border rounded-lg bg-[#626262] hover:bg-[#FE623F] transition-all"
         >
           PREVIOUS
         </button>
         <button 
-  onClick={() => {
-    // Get missing fields where no file is uploaded
-    const missingFields = REQUIREMENTS.filter(req => 
-      !formData.uploadedFiles[req.id] || formData.uploadedFiles[req.id].length === 0
-    );
+          onClick={() => {
+            // Get missing fields where no file is uploaded
+            const missingFields = REQUIREMENTS.filter(req => 
+              !formData.uploadedFiles[req.id] || formData.uploadedFiles[req.id].length === 0
+            );
 
-    if (missingFields.length > 0) {
-      toast({
-        title: "Error",
-        description: "Please upload a file for all required fields.",
-        variant: "destructive",
-      });
-      return; // Stop the function if validation fails
-    }
+            if (missingFields.length > 0) {
+              toast({
+                title: "Error",
+                description: "Please upload a file for all required fields.",
+                variant: "destructive",
+              });
+              return; // Stop the function if validation fails
+            }
 
-    // If all required files are uploaded, proceed to the next step
-    setCurrentStep(prev => prev + 1);
-  }} 
-  className="bg-[#FE623F] text-white font-bold px-6 py-3 rounded-xl"
->
-  Next
-</button>
-
+            // If all required files are uploaded, proceed to the next step
+            setCurrentStep(prev => prev + 1);
+          }} 
+          className="bg-[#FE623F] text-white font-bold px-6 py-3 rounded-xl"
+        >
+          Next
+        </button>
       </div>
     </div>
   );

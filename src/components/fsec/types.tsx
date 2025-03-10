@@ -15,13 +15,14 @@ export interface FormSectionProps {
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     disabled?: boolean;
   }
-  
+ 
   export interface FSECFormData {
+    applicationType: string;
     tradeName: string;
     establishmentName: string;
     ownerName: string;
     representativeName: string;
-    
+    dtiNumber?: string;
     occupancyType: string;
     floorArea: string;
     storeyCount: string;

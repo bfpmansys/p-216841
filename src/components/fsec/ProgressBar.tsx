@@ -4,9 +4,9 @@ interface Step {
   number: number;
   text: string;
 }
-
 interface ProgressBarProps {
   currentStep: number;
+  totalSteps: number;
 }
 
 export const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {

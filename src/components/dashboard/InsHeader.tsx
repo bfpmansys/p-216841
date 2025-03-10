@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/integrations/supabase/client";
 
-export const Header: FC = () => {
+export const InsHeader: FC = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -33,9 +33,9 @@ export const Header: FC = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  return (
-    <header className="fixed top-0 left-0 right-0 z-10 h-[116px] flex items-center justify-end bg-white px-10 py-0 border-2 border-solid border-[rgba(128,128,128,0.5)] max-sm:px-5 max-sm:py-0">
-      {/* Everything aligned to the right */}
+    return (
+      <div className="bg-white w-full pt-4 pb-3 md:pt-[19px] md:pb-[11px] px-5 md:px-[61px] border-2 border-solid border-[rgba(128,128,128,0.5)] max-sm:px-5 max-sm:py-0">
+        {/* Everything aligned to the right */}
       <div className="flex items-center gap-6">
         {/* Mobile Menu Toggle Button */}
         <button className="hidden max-sm:block" onClick={toggleMenu}>
@@ -109,6 +109,6 @@ export const Header: FC = () => {
           </nav>
         </div>
       )}
-    </header>
-  );
-};
+      </div>
+    );
+  };

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { FSECFormData } from './types';
 import { FormSection } from './FormSection';
@@ -16,11 +15,13 @@ const REQUIREMENTS = [
 interface ConfirmationPageProps {
   formData: FSECFormData;
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
+  onPrevious?: () => void; // Add this prop
 }
 
 export const ConfirmationPage: React.FC<ConfirmationPageProps> = ({
   formData,
   setCurrentStep,
+  onPrevious,
 }) => {
   const { toast } = useToast();
 
@@ -51,7 +52,7 @@ export const ConfirmationPage: React.FC<ConfirmationPageProps> = ({
       const { data, error: applicationError } = await supabase
         .from('applications')
         .insert({
-          application_type: "FSEC",
+          application_type: 'FSEC',
           establishment_name: formData.establishmentName,
           owner_name: formData.ownerName,
           representative_name: formData.representativeName,
@@ -99,6 +100,7 @@ export const ConfirmationPage: React.FC<ConfirmationPageProps> = ({
               return supabase
                 .from('application_requirements')
                 .insert({
+                  id: crypto.randomUUID(),
                   application_id: applicationId,
                   requirement_type: type,
                   file_url: fileData.path,
@@ -128,8 +130,13 @@ export const ConfirmationPage: React.FC<ConfirmationPageProps> = ({
     }
   };
   
-
-  
+  const handlePrevious = () => {
+    if (onPrevious) {
+      onPrevious(); // Use the provided onPrevious function
+    } else {
+      setCurrentStep(2); // Fallback to direct step change
+    }
+  };
 
   const renderEditableField = (label: string, value: string, step: number) => (
     <div className="flex justify-between items-center py-2">
@@ -207,7 +214,7 @@ export const ConfirmationPage: React.FC<ConfirmationPageProps> = ({
 
       <div className="flex justify-between mt-6">
         <button
-          onClick={() => setCurrentStep(2)}
+          onClick={handlePrevious}
           className="px-6 py-2 text-[#FE623F] border border-[#FE623F] rounded-lg hover:bg-[#FE623F] hover:text-white transition-colors"
         >
           Previous

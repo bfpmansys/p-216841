@@ -7,84 +7,46 @@ import { WelcomeMessage } from "@/components/dashboard/WelcomeMessage";
 import { EstablishmentCard } from "@/components/dashboard/EstablishmentCard";
 import { ApplicationTypeModal } from "@/components/dashboard/ApplicationTypeModal";
 import { Bell } from "lucide-react";
+import { Header } from "@/components/dashboard/Header";
+import { Sidebar } from "@/components/layout/Sidebar";
+import { WelcomeSection } from "@/components/dashboard/WelcomeSection";
+import { EstablishmentList } from "@/components/dashboard/EstablishmentList";
 
 
 const Dashboard: FC = () => {
-  const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
+  const userInfo = {
+    name: "DIZON, SANDARAH",
+    userId: "22-222145",
+    establishmentCount: 3,
+    lastLogin: "February 31, 2025",
+  };
 
   return (
-    <div className="min-h-screen bg-white font-['Poppins']">
-      <div className="bg-white flex flex-col overflow-hidden pb-[47px]">
-        <nav />
-        <DashboardNavbar />
-        <main className="bg-[#ffecdb] self-center flex w-full max-w-[1349px] flex-col mt-[39px] pb-10 rounded-2xl">
-          <div className="bg-[#fe623f] flex justify-between items-center px-[29px] py-[22px] rounded-[16px_16px_0_0]">
-            <div className="text-white text-2xl font-bold">DASHBOARD</div>
+    <div className="min-h-screen bg-[#FFF8F1]">
+      <Header />
+      <Sidebar />
+
+      <main className="pt-[136px] ml-[106px] p-5 max-sm:ml-0">
+        <div className="flex justify-between items-center bg-[#fe623f] p-5 rounded-[16px_16px_0_0] max-sm:p-[15px]">
+          <h1 className="text-white text-2xl font-bold">DASHBOARD</h1>
+          <button>
             <img
-              src="/images/icons/bellIcon.png"
-              alt="Bell Icon"
-              className="aspect-[1] object-contain w-10"
+              src="https://cdn.builder.io/api/v1/image/assets/TEMP/55f1fb04439a40c4832d8aa12152a0da7d6d8843"
+              className="w-10 h-10"
+              alt="Notifications"
             />
-          </div>
-          <div className="flex flex-col mt-[18px] px-8 py-0 max-md:px-5 max-md:py-0">
-          <div className="flex justify-between w-full text-black px-10 py-5 max-md:flex-col max-md:gap-5">
-            <WelcomeMessage />
-            <UserInfoCard></UserInfoCard>
-          </div>
-            <hr className="border mx-0 my-[42px] border-solid border-black" />
-            <div className="flex mt-[17px] px-8 py-0 max-md:flex-col max-md:px-5 max-md:py-0">
-              <QuickLinks />
-              
-              <div className="w-9/12 pl-10 max-md:w-full">
-                <div className="flex justify-between items-center px- py-0 flex-wrap gap-4 max-md:flex-col max-md:px-5">
-                  <h2 className="text-xl font-bold">ESTABLISHMENT INFORMATION</h2>
-                  <button 
-                    onClick={() => setIsApplicationModalOpen(true)}
-                    className="bg-[#FF6347] flex items-center gap-3 text-white px-4 py-2 rounded-lg text-sm hover:bg-[#FF6347]/90 transition-colors"
-                  >
-                    <img
-                      src="/images/icons/addIcon.png"
-                      alt="Add Icon"
-                      className="w-5 h-5 object-contain"
-                    />
-                    APPLY ESTABLISHMENT
-                  </button>
-                </div>
+          </button>
+        </div>
 
-                
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="font-semibold text-lg"></h2>
-                </div>
-                <EstablishmentCard
-                  status="UNREGISTERED"
-                  name="Dizon Enterprises"
-                  type="FIRE SAFETY EVALUATION CLEARANCE (FSEC)"
-                  state="FOR COMPLIANCE"
-                />
-                <EstablishmentCard
-                  status="UNREGISTERED"
-                  name="Javier Enterprises"
-                  type="FSIC FOR CERTIFICATE OF OCCUPANCY"
-                  state="REJECTED"
-                />
-                <EstablishmentCard
-                  status="REGISTERED"
-                  name="Javier Enterprises"
-                  type="FSIC FOR BUSINESS PERMIT"
-                  state="FOR INSPECTION"
-                />
-              </div>
-            </div>
-          </div>
-        </main>
-      </div>
+        <WelcomeSection userInfo={userInfo} />
 
-      <ApplicationTypeModal 
-        isOpen={isApplicationModalOpen}
-        onClose={() => setIsApplicationModalOpen(false)}
-      />
+        <div className="h-px bg-black mx-0 my-5" role="separator" />
+
+        <EstablishmentList />
+      </main>
     </div>
   );
 };
+
 
 export default Dashboard;
